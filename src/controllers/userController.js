@@ -3,7 +3,7 @@ const model = require('../models/userModel');
 //Check User Id 
 module.exports.checkUserId = (req, res, next) => {
     const data = {
-        user_id: req.params.user_id || req.body.user_id
+        user_id: res.locals.userId || req.body.user_id
     };
 
     if (data.user_id == undefined)
@@ -50,7 +50,7 @@ module.exports.checkUsername = (req, res, next) => {
         next();
     };
 
-    model.checkUsername(data, callback);
+    model.selectUserByUsername(data, callback);
 };
 
 //Creating New user
@@ -80,7 +80,7 @@ module.exports.createNewUser = (req, res, next) => {
 
 //Get User By ID
 module.exports.getUser = (req, res, next) => {
-    const user_id = req.params.user_id || res.locals.user_id;
+    const user_id = res.locals.userId || res.locals.user_id;
 
     if (user_id == undefined){
         return res.status(400).json({message: "User id is undefined."});
@@ -125,7 +125,7 @@ module.exports.updateUser = (req, res, next) => {
         return res.status(400).json({message: "user_id or star_name or points or diamonds undefined"})
 
     const data = {
-        user_id: req.params.user_id,
+        user_id: res.locals.userId,
         username: req.body.username,
         star_name: req.body.star_name,
         points: req.body.points,
@@ -167,3 +167,98 @@ module.exports.updateDiamondsForWinners = (req, res, next) => {
     model.updateDiamondsForWinner(data, callback);
 };
 
+
+// Check Username or Email Exist
+module.exports.checkUsernameOrEmailExist = (req, res, next) => {
+
+    // 400 Check for all expected input 
+    if (req.body.username == undefined ||
+        req.body.email == undefined ||
+        req.body.password == undefined) {
+        return res.status(400).json({message: "Username, email or password is missing."});
+    }
+    const data = {
+        username: req.body.username,
+        email: req.body.email
+    };
+
+    const callback = (error, results) => {
+
+        if (error) {
+            console.log(error);
+            return res.status(500).json({message: "Internal server error"});
+        } 
+        else {
+            if (results.length > 0) {
+                return res.status(409).json({message: "Username or email already exists"});
+            } 
+            else next();
+        }
+    };
+  
+    model.checkUsernameOrEmailExist(data, callback);
+};
+
+// Register User (Create)
+module.exports.register = (req, res, next) => {
+    // We use hash here, not the raw password
+    const data = {
+        username: req.body.username,
+        email: req.body.email,
+        password: res.locals.hash //Encrypted in hashPassword
+    };
+
+    const callback = (error, results) => {
+
+        if (error) {
+            console.log(error);
+            return res.status(500).json({message: "Internal server error"});
+        } 
+        
+        else {
+            //For sendToken: They send res.locals message & token
+            res.locals.message = `User ${data.username} created successfully.`; 
+
+            //For generateToken: They save res.locals.userId into token payload
+            res.locals.userId = results.insertId; 
+            next();
+        }
+    };
+  
+    model.insertUser(data, callback);
+};
+
+// Login
+// This retrieves related User data by username for comparing later
+module.exports.login = (req, res, next) => {
+    if (req.body.username == undefined ||
+        req.body.password == undefined) {
+        return res.status(400).json({message: "Username or password is missing."});
+    }
+    const data = {
+        username: req.body.username
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({message: "Internal server error"});
+        } 
+        
+        else {
+            if (results.length == 0) {
+                return res.status(404).json({message: "User not found"});
+            } 
+
+            else {
+                // For comparePassword: hashed password is saved into res.locals.hash
+                res.locals.hash = results[0].password;
+                // For generateToken: Matching userId for input username is saved. 
+                res.locals.userId = results[0].id;
+                next();
+            }
+        }
+    };
+  
+    model.selectUserByUsername(data, callback);
+};

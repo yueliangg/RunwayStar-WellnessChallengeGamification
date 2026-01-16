@@ -6,6 +6,7 @@ const fashionShowController = require('../controllers/fashionShowController');
 const userController = require('../controllers/userController');
 const inventoryController = require('../controllers/inventoryController');
 const runwayStarController = require('../controllers/runwayStarController');
+const jwtMiddleware = require('../middleware/jwtMiddleware');
 
 const { withMessage, sendResponse } = require('../middleware/response');
 
@@ -74,7 +75,8 @@ router.post(
  * 6. sendResponse
  *    - Sends the final response back to the client
  */
-router.delete('/:fashion_show_id/:user_id',
+router.delete('/:fashion_show_id',
+    jwtMiddleware.verifyToken,
     userController.checkUserId,
     fashionShowController.getFashionShow,
     fashionShowEntryController.deleteEntry,

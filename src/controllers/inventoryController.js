@@ -23,7 +23,7 @@ module.exports.checkUserAlreadyOwnsItem = (req, res, next) => {
 // get user inventory by user
 module.exports.getInventoryByUser = (req, res, next) => {
     const data = {
-        user_id: req.params.user_id
+        user_id: res.locals.userId
     };
 
     const callback = (error, results, fields) => {

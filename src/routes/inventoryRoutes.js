@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const inventoryController = require('../controllers/inventoryController');
 const userController = require('../controllers/userController');
+const jwtMiddleware = require('../middleware/jwtMiddleware')
 
 const { withMessage, sendResponse } = require('../middleware/response');
 
@@ -22,7 +23,8 @@ const { withMessage, sendResponse } = require('../middleware/response');
  * 4. sendResponse
  *    - Sends the response back to the client
  */
-router.get('/:user_id',
+router.get('/',
+    jwtMiddleware.verifyToken,
     userController.checkUserId,
     inventoryController.getInventoryByUser,
     withMessage('User inventory retrieved successfully', 200),

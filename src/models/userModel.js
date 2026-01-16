@@ -1,9 +1,24 @@
 const pool = require("../services/db");
 
-module.exports.checkUsername = (data, callback) => {
+// Check Username or Email Exist
+module.exports.checkUsernameOrEmailExist = (data, callback) => {
+
     const SQLSTATEMENT = `
-    SELECT * FROM User
-    WHERE username = ?
+        SELECT * FROM User 
+        WHERE username = ? OR email = ?
+    `;
+
+    const VALUES = [data.username, data.email];
+
+    pool.query(SQLSTATEMENT, VALUES, callback);
+};
+
+// Select User by Username
+module.exports.selectUserByUsername = (data, callback) => {
+
+    const SQLSTATEMENT = `
+        SELECT * FROM User 
+        WHERE username = ?
     `;
 
     const VALUES = [data.username];
