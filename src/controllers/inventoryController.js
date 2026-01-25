@@ -185,8 +185,7 @@ module.exports.calculateAttractionScore = (req, res, next) => {
             total_score: total_score,
             items: results
         };
-
-
+        
         next();
     };
 

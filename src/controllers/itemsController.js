@@ -14,6 +14,7 @@ module.exports.getAllItems = (req, res, next) => {
     model.selectAllItems(callback);
 };
 
+//Creating New Item
 module.exports.createItem = (req, res, next) => {
     if (req.body.name == undefined ||
         req.body.type == undefined ||

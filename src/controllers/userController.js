@@ -56,27 +56,37 @@ module.exports.checkUsername = (req, res, next) => {
 //Creating New user
 module.exports.createNewUser = (req, res, next) => {
 
-    if (req.body.username == undefined ||
-        req.body.star_name == undefined
-    ){
-        res.status(400).json({message: "Username or star name is undefined."})
+    if (
+        req.body.username == undefined ||
+        req.body.star_name == undefined ||
+        req.body.email == undefined ||
+        req.body.password == undefined
+    ) {
+        return res.status(400).json({
+            message: "Username, email, password, or star name is undefined."
+        });
     }
 
     const data = {
         username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
         star_name: req.body.star_name
     };
 
     const callback = (error,results, fields) => {
-        if (error){
-            console.log("Error: CreateNewUser: ", error);
-            res.status(500).json(error);
+        if (error) {
+            console.log("Error: CreateNewUser:", error);
+            return res.status(500).json(error);
         }
+
         res.locals.user_id = results.insertId;
         next();
-    };
-    model.insertUser(data,callback);
+    }
+
+    model.insertUser(data, callback);
 };
+
 
 //Get User By ID
 module.exports.getUser = (req, res, next) => {
@@ -97,6 +107,7 @@ module.exports.getUser = (req, res, next) => {
         res.locals.data = results[0]
         next();
     };
+
     model.selectUserById(data, callback);
 };
 
@@ -113,6 +124,7 @@ module.exports.getAllUser = (req, res, next) => {
         }
         
     };
+
     model.selectAllUser(callback);
 };
 
@@ -205,8 +217,13 @@ module.exports.register = (req, res, next) => {
     const data = {
         username: req.body.username,
         email: req.body.email,
-        password: res.locals.hash //Encrypted in hashPassword
+        password: res.locals.hash, //Encrypted in hashPassword
+        star_name: req.body.star_name
     };
+
+    if (!req.body || !req.body.star_name || !req.body.username || !req.body.email || !req.body.password) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
 
     const callback = (error, results) => {
 
@@ -255,10 +272,11 @@ module.exports.login = (req, res, next) => {
                 res.locals.hash = results[0].password;
                 // For generateToken: Matching userId for input username is saved. 
                 res.locals.userId = results[0].id;
+                
                 next();
             }
         }
     };
-  
+
     model.selectUserByUsername(data, callback);
 };

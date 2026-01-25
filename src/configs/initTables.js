@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS FashionShowEntry;
 CREATE TABLE User (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     star_name VARCHAR(100) NOT NULL,
     points INT DEFAULT 0,
     diamonds INT DEFAULT 0
@@ -71,13 +73,12 @@ CREATE TABLE FashionShowEntry (
     attraction_score INT DEFAULT 0
 );
 
-INSERT INTO User (username, star_name, points, diamonds) VALUES
-('Dashi', 'Aurora Blaze', 300, 200),
-('Mia', 'Luna Silk', 250, 150),
-('Rina', 'Nova Charm', 400, 100),
-('Eva', 'Violet Luxe', 150, 10),
-('Zara', 'Crimson Glow', 500, 10);
-
+INSERT INTO User (username, email, password, star_name, points, diamonds) VALUES
+('Dashi', 'dashi@example.com', 'abc', 'Aurora Blaze', 300, 200),
+('Mia', 'mia@example.com', 'abc', 'Luna Silk', 250, 150),
+('Rina', 'rina@example.com', 'abc', 'Nova Charm', 400, 100),
+('Eva', 'eva@example.com', 'abc', 'Violet Luxe', 150, 10),
+('Zara', 'zara@example.com', 'abc', 'Crimson Glow', 500, 10);
 
 INSERT INTO WellnessChallenge (creator_id, description, points) VALUES
 (1, 'Sleep at least 7 hours', 50),
@@ -100,7 +101,7 @@ INSERT INTO UserCompletion (challenge_id, user_id, details) VALUES
 INSERT INTO RunwayStar (user_id, show_id, total_attraction, final_rank, diamonds_won) VALUES
 (1, 1, 25, 1, 200),
 (2, 1, 17, 2, 150), 
-(3, 2, 10, 3, 100), 
+(3, 2, 10, 3, 100);
 
 INSERT INTO Items (name, type, cost_points, cost_diamonds, attraction_value) VALUES
 ('Silk Dress', 'Outfit', 100, 0, 10),

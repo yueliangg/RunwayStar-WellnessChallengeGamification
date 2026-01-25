@@ -1,84 +1,52 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const exampleController = require('../controllers/exampleController');
-const jwtMiddleware = require('../middleware/jwtMiddleware')
+const jwtMiddleware = require('../middleware/jwtMiddleware');
 const bcryptMiddleware = require('../middleware/bcryptMiddleware');
 
 const { withMessage, sendResponse } = require('../middleware/response');
 
-//1. POST /users 
-//creating 
+//1. POST /users
+// Description: Create a new user by checking if username is available, 
+// hashing password, storing user data, and returning the created user.
 router.post('/',
-    userController.checkUsername, 
-    userController.createNewUser, 
-    userController.getUser,
+    userController.checkUsername,       
+    userController.createNewUser,      
+    userController.getUser,            
     withMessage('User created successfully', 201),
     sendResponse
 );
 
-//2. GET /users 
+//2. GET /users
+// Description: Fetch all users in the system.
 router.get('/',
-    userController.getAllUser,
+    userController.getAllUser,        
     withMessage('All users fetched successfully', 200),
     sendResponse
-)
+);
 
-//3. GET /users/{user_id} 
-router.get('/',
-    jwtMiddleware.verifyToken,
-    userController.checkUserId,
-    userController.getUser,
-    withMessage("Specific User fetched successfully", 200),
+//3. GET /users/{user_id}
+// Description: Fetch a specific user by user ID after verifying JWT token.
+router.get('/user',
+    jwtMiddleware.verifyToken,         
+    userController.checkUserId,         
+    userController.getUser,             
+    withMessage("Specific user fetched successfully", 200),
     sendResponse
-)
+);
 
-//4. PUT /users/{user_id} 
+//4. PUT /users/{user_id}
+// Description: Update a user's details (username, star_name, points, diamonds) 
+// after verifying JWT token, ensuring username is not duplicated, 
+// then returning the updated user.
 router.put('/',
-    jwtMiddleware.verifyToken,
-    userController.checkUserId, //checking User Exists
-    userController.checkUsername, //Checking Username is not duplicated
-    userController.updateUser, //Updating User details
-    userController.getUser, //Retrieve the updated user
-    withMessage("User Updated successfullly", 200),
+    jwtMiddleware.verifyToken,          
+    userController.checkUserId,         
+    userController.checkUsername,   
+    userController.updateUser,         
+    userController.getUser,            
+    withMessage("User updated successfully", 200),
     sendResponse
-)
-
-router.post("/login", 
-    userController.login, 
-    bcryptMiddleware.comparePassword, 
-    jwtMiddleware.generateToken, 
-    jwtMiddleware.sendToken);
-
-router.post("/register", 
-    userController.checkUsernameOrEmailExist, 
-    bcryptMiddleware.hashPassword, 
-    userController.register, 
-    jwtMiddleware.generateToken, 
-    jwtMiddleware.sendToken);
-
-router.post("/jwt/generate", 
-    exampleController.preTokenGenerate, 
-    jwtMiddleware.generateToken, 
-    exampleController.beforeSendToken, 
-    jwtMiddleware.sendToken
-);
-
-router.get("/jwt/verify", 
-    jwtMiddleware.verifyToken, 
-    exampleController.showTokenVerified
-);
-
-router.post("/bcrypt/compare",
-    exampleController.preCompare, 
-    bcryptMiddleware.comparePassword, 
-    exampleController.showCompareSuccess
-);
-
-router.post("/bcrypt/hash", 
-    bcryptMiddleware.hashPassword, 
-    exampleController.showHashing
 );
 
 module.exports = router;
-

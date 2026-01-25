@@ -26,16 +26,23 @@ module.exports.selectUserByUsername = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
-module.exports.insertUser = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    INSERT INTO User (username, star_name)
-    VALUES (?, ?);
+//Insert New User
+module.exports.insertUser = (data, callback) => {
+    const SQLSTATEMENT = `
+        INSERT INTO User (username, email, password, star_name)
+        VALUES (?, ?, ?, ?);
     `;
-    const VALUES = [data.username, data.star_name];
 
-    pool.query(SQLSTATMENT, VALUES, callback);
-}
+    const VALUES = [
+        data.username,
+        data.email,
+        data.password,
+        data.star_name
+    ];
+
+    pool.query(SQLSTATEMENT, VALUES, callback);
+};
+
 
 module.exports.selectUserById = (data, callback) => {
     const SQLSTATEMENT = `

@@ -44,6 +44,7 @@ module.exports.createFashionShow = (req, res, next) => {
             console.log("Error: CreateFashionShow: ", error);
             res.status(500).json(error);
         }
+        
         res.locals.fashion_show_id = results.insertId;
         next();
     };
@@ -57,22 +58,21 @@ module.exports.getFashionShow = (req, res, next) => {
         show_id: req.params.fashion_show_id || res.locals.fashion_show_id || req.body.fashion_show_id
     };
 
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error getFashionShow:", error);
-            return res.status(500).json(error);
-        }
+    model.selectFashionShow(data, (error, results) => {
+        if (error) return res.status(500).json(error);
 
         if (results.length === 0) {
             return res.status(404).json({ message: "Fashion show not found" });
         }
 
-        res.locals.data = results[0];  
+        res.locals.fashionShow = results[0];
+
+        if (!res.locals.data) {
+            res.locals.data = results[0];
+        }
 
         next();
-    };
-
-    model.selectFashionShow(data, callback);
+    });
 };
 
 // get fashion show by id

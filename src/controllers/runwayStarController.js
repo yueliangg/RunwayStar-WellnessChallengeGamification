@@ -64,7 +64,7 @@ module.exports.insertTop3RunwayStars = (req, res, next) => {
 
 //get Top 3 ranked Runway Stars by Show id
 module.exports.getFinalsByFashionShow = (req, res, next) => {
-    const data = { show_id: req.params.fashion_show_id};
+    const data = { show_id: req.params.fashion_show_id || req.body.fashion_show_id };
 
     const callback = (error, results) => {
         if (error) {
