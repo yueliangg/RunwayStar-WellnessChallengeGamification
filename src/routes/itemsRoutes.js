@@ -4,12 +4,14 @@ const router = express.Router();
 const itemsController = require('../controllers/itemsController');
 const userController = require('../controllers/userController');
 const inventoryController = require('../controllers/inventoryController');
+const jwtMiddleware = require('../middleware/jwtMiddleware')
 const { withMessage, sendResponse } = require('../middleware/response');
 
 // Route: GET /items
 // Description: Retrieve all available items in the system
-router.get('/', 
-    itemsController.getAllItems,              
+router.get('/all', 
+    itemsController.getNormalItems, 
+    itemsController.getExclusiveItems,               
     withMessage('All Items retreived successfully', 200),
     sendResponse
 )
@@ -38,6 +40,7 @@ router.put('/:item_id',
 // Description: Purchase an item and add it to the user's inventory
 router.post(
     '/:item_id/buy',
+    jwtMiddleware.verifyToken,
     userController.checkUserId,                  
     itemsController.getItem,                   
     inventoryController.checkUserAlreadyOwnsItem,  

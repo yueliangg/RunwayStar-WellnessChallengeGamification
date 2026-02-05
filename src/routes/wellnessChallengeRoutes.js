@@ -1,14 +1,26 @@
 const express = require('express');
 const router = express.Router();
 
-
+const jwtMiddleware = require('../middleware/jwtMiddleware');
 const wellnessController = require('../controllers/wellnessChallengeController');
 const userController = require('../controllers/userController');
 const { withMessage, sendResponse } = require('../middleware/response');
 
+// GET /challenges/user
+// Description: Retrieves all completion records by user
+router.get(
+    "/user",
+    jwtMiddleware.verifyToken,
+    userController.checkUserId,
+    wellnessController.getAllCompletionsByUser,     
+    withMessage("Records retrieved successfully", 200),
+    sendResponse
+);
+
 // 5. POST /challenges
 // Description: Creates a new wellness challenge.
-router.post('/',
+router.post('/create',
+    jwtMiddleware.verifyToken,
     wellnessController.createChallenge,   
     wellnessController.getChallenge,      
     withMessage("Challenge created successfully", 201),
@@ -47,7 +59,8 @@ router.put(
 // 9. POST /challenges/{challenge_id}
 // Description: Creates a completion record when a user completes a challenge and rewards points to the user
 router.post(
-    "/:challenge_id",
+    "/:challenge_id/record",
+    jwtMiddleware.verifyToken,
     wellnessController.checkChallengeExists,  
     userController.checkUserId,               
     wellnessController.createRecord,         
@@ -64,6 +77,19 @@ router.get(
     wellnessController.checkChallengeExists, 
     wellnessController.getAllCompletions,     
     withMessage("Records retrieved successfully", 200),
+    sendResponse
+);
+
+//  DELETE /challenges/{challenge_id}/record
+// Description: Deletes user completion
+router.delete('/:challenge_id/record',
+    jwtMiddleware.verifyToken,
+    userController.checkUserId,
+    wellnessController.checkCompletionByUser,
+    wellnessController.deleteUserCompletionByUser,
+    userController.deductPoints,
+    userController.updatePoints,   
+    withMessage("Challenge delete successfulyy", 204),
     sendResponse
 );
 

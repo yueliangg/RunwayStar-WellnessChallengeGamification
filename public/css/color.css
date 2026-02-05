@@ -1,0 +1,30 @@
+:root {
+  /* Backgrounds */
+  --bg-card: #f2e1fb;              
+  --bg-footer: #b692cd;           
+  --bg-header: #b692cd;
+
+  /* Auth background */
+  --bg-auth-gradient-start: rgba(206, 166, 229, 0.55);
+  --bg-auth-gradient-end: rgba(185, 148, 210, 0.65);
+  --bg-auth-image: url("https://raw.githubusercontent.com/yueliangg/images/main/bg_img1.png");
+
+  /* Buttons */
+  --btn-auth-bg: #8e5bbf;           
+  --btn-auth-bg-hover: #6f3fa1;     
+  --btn-auth-color: #ffffff;
+
+  /* Borders */
+  --border-input: #c6b3d4;
+  --border-focus: #8e5bbf;
+
+  /* Text */
+  --text-label: #2e1f38;            
+  --text-link: #a06cd5;             
+  --text-link-hover: #e6d6ff;
+  --text-navbar: #ffffff;
+
+  --font-heading: "Playfair Display", serif;
+  --font-body: "Poppins", sans-serif;
+}
+

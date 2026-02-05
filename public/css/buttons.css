@@ -1,0 +1,63 @@
+/* ===========================
+   Button Components
+   =========================== */
+
+/* Primary buttons (Register, Login, Submit) */
+.btn {
+   background: linear-gradient(135deg, #c9b2e0 0%, #c084fc 100%);
+  color: var(--btn-auth-color);
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px;
+  transition: background-color 0.3s;
+  border: none;
+}
+
+.btn:hover {
+  background-color: var(--btn-auth-bg-hover);
+  color: var(--btn-auth-color);
+}
+
+/* Register button in navbar */
+.btn-register {
+  background-color: rgb(208, 177, 229);
+  color: var(--btn-auth-color);
+  border-radius: 8px;
+  padding: 8px 20px;
+  transition: background-color 0.3s;
+}
+
+.btn-register:hover {
+  background-color: var(--btn-auth-bg-hover);
+  color: var(--btn-auth-color);
+}
+
+.price-button {
+  background: linear-gradient(135deg, #c99bd6, #7b5cf0); /* nice purple gradient */
+  color: #fff; /* white text */
+  font-weight: 600;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px; /* rounded corners */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 12px rgba(123, 92, 214, 0.25);
+}
+
+.price-button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(123, 92, 214, 0.35);
+}
+
+.price-button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 4px 10px rgba(123, 92, 214, 0.2);
+}
+
+.price-button:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+}

@@ -22,8 +22,8 @@ module.exports.getAllUserEntries = (req, res, next) => {
 // Check if user already entered a fashion show
 module.exports.checkUserEntry = (req, res, next) => {
     const data = {
-        show_id: req.params.fashion_show_id,
-        user_id: req.body.user_id
+        show_id: req.params.fashion_show_id || req.body.fashion_show_id,
+        user_id: res.locals.userId || req.body.user_id
     };
 
     const callback = (error, results) => {
@@ -45,12 +45,11 @@ module.exports.checkUserEntry = (req, res, next) => {
     model.getFashionShowEntry(data, callback);
 };
 
-
 // Enter user into fashion show
 module.exports.enterFashionShow = (req, res, next) => {
     const data = {
-        show_id: req.params.fashion_show_id,
-        user_id: req.body.user_id,
+        show_id: req.params.fashion_show_id || req.body.fashion_show_id,
+        user_id: res.locals.userId || req.body.user_id,
         attraction_score: res.locals.total_score
     };
 
@@ -70,8 +69,8 @@ module.exports.enterFashionShow = (req, res, next) => {
 // Get current user's entry for a fashion show
 module.exports.getUserEntry = (req, res, next) => {
     const data = {
-        show_id: req.params.fashion_show_id,
-        user_id: req.body.user_id 
+        show_id: req.params.fashion_show_id || req.body.fashion_show_id,
+        user_id: res.locals.userId || req.body.user_id 
     };
 
     const callback = (error, results) => {
@@ -102,11 +101,7 @@ module.exports.getTop3Entries = (req, res, next) => {
             console.log("Error getTop3Entries:", error);
             return res.status(500).json(error);
         }
-        if (results.length < 3) {
-            return res.status(422).json({
-                message: "Not enough participants to rank top 3"
-            });
-        }
+        
         
         res.locals.top3 = results; 
         next();
@@ -119,7 +114,7 @@ module.exports.getTop3Entries = (req, res, next) => {
 module.exports.deleteEntry = (req, res, next) => {
     const data = {
         fashion_show_id: req.params.fashion_show_id,
-        user_id: req.params.user_id
+        user_id: res.locals.userId
     };
 
     const callback = (error, results) => {
@@ -135,4 +130,25 @@ module.exports.deleteEntry = (req, res, next) => {
     };
 
     model.deleteEntry(data, callback);
+};
+
+// Delete fashion show entry
+module.exports.deleteEntryByShow = (req, res, next) => {
+    const data = {
+        fashion_show_id: req.params.fashion_show_id
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.log("Error deleting fashion show entry:", error);
+            return res.status(500).json(error);
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: "Entry not found." });
+        }
+        next();
+    };
+
+    model.deleteEntryByShow(data, callback);
 };

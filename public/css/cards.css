@@ -1,0 +1,113 @@
+/* ===========================
+   Card Components
+   =========================== */
+
+/* Floating login card */
+.card {
+  border-radius: 15px;
+  background-color: var(--bg-card);
+}
+
+.card {
+  animation: cardFloat 5s ease-in-out infinite;
+}
+
+.wallet-card {
+  max-width: 500px;       
+  margin: 0 auto;    
+  background: rgba(201, 155, 214, 0.95); 
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(123, 92, 214, 0.25);
+  border: 2px solid var(--btn-auth-bg);
+}
+
+.wallet-label {
+  color: #faf1f9; 
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1rem;
+}
+
+.currency-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: linear-gradient(
+    135deg,
+    #e9a0f3 0%,
+    #f0ceec 100%
+  );
+  border-radius: 15px;
+  border-left: 4px solid var(--btn-auth-bg);
+}
+
+.currency-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.gold-icon {
+  background: linear-gradient(
+    135deg,
+    #F4E7B5 0%,
+    #FFF7DC 100%
+  );
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(142, 91, 191, 0.4);
+}
+
+.diamond-icon {
+  background: linear-gradient(
+    135deg,
+    #c9cbde 0%,
+    #F8F9FF 100%
+  );
+  color: #fff;
+  box-shadow: 0 4px 15px rgb(145, 72, 156);
+}
+
+/* Price Tag Styles */
+.price-tag {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.price-tag i {
+    font-size: 1.3rem;
+    margin-right: 8px;
+}
+
+@keyframes cardFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.card-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}

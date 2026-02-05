@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>My Runway Star - Fashion Shows</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+  <!-- Custom CSS -->
+  <link href="css/color.css" rel="stylesheet" />
+  <link href="css/base.css" rel="stylesheet" />
+  <link href="css/page.css" rel="stylesheet" />
+  <link href="css/buttons.css" rel="stylesheet" />
+  <link href="css/cards.css" rel="stylesheet" />
+  <link href="css/navbar.css" rel="stylesheet" />
+  <link href="css/footer.css" rel="stylesheet" />
+  <link href="css/userStat.css" rel="stylesheet" />
+  <link href="css/form.css" rel="stylesheet" />
+  <link href="css/modal.css" rel="stylesheet" />
+  
+</head>
+
+<body class="d-flex flex-column min-vh-100 auth-page">
+
+  <!-- Navbar -->
+  <div id="navbar"></div>
+
+  <!-- User info container (floating stats box) -->
+  <div id="getUserInfo"></div>
+
+  <!-- Fashion Shows Content -->
+  <main class="flex-grow-1 container py-5">
+    
+    <!-- Page Header -->
+    <div class="text-center mb-5">
+      <h1 class="display-4 mb-3 fw-bold text-purple">
+        <i class="fas fa-trophy text-purple"></i> Fashion Shows
+      </h1>
+      <p class="lead text-purple">Compete in glamorous fashion shows and win amazing prizes!</p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills nav-fill mb-4 shadow-sm" id="showTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill" id="ongoing-tab" data-bs-toggle="pill" 
+                data-bs-target="#ongoing" type="button" role="tab" 
+                aria-controls="ongoing" aria-selected="true">
+          <i class="fas fa-play-circle me-2"></i>Ongoing Shows
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill" id="completed-tab" data-bs-toggle="pill" 
+                data-bs-target="#completed" type="button" role="tab" 
+                aria-controls="completed" aria-selected="false">
+          <i class="fas fa-check-circle me-2"></i>Completed Shows
+        </button>
+      </li>
+    </ul>
+
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="showTabsContent">
+      
+      <!-- Ongoing Shows Tab -->
+      <div class="tab-pane fade show active" id="ongoing" role="tabpanel" aria-labelledby="ongoing-tab">
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3 section-header">
+              <h3 class="mb-0 text-white">
+                <i class="fas fa-calendar-alt me-2"></i> Open for Registration
+              </h3>
+              <span class="badge bg-purple rounded-pill fs-6" id="ongoingCount">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="ongoingFashionShows">
+          <!-- Ongoing fashion show cards will be dynamically inserted here -->
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading ongoing shows...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed Shows Tab -->
+      <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3 section-header">
+              <h3 class="mb-0 text-white">
+                <i class="fas fa-medal me-2"></i> Results & Rankings
+              </h3>
+              <span class="badge bg-purple-light rounded-pill fs-6" id="completedCount">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="completedFashionShows">
+          <!-- Completed fashion shows will be dynamically inserted here -->
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-purple" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading completed shows...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Create Show Button (only for admins/organizers) -->
+      <button class="btn btn-purple btn-lg mt-3" id="createShowBtn">
+        <i class="fas fa-plus-circle me-2"></i>Create New Show
+      </button>
+    </div>
+
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modalContainer"></div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto py-3 custom-footer text-center">
+    <p class="m-0">Runway Star Game &copy; 2026. Educational Project.</p>
+  </footer>
+
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Project JS -->
+  <script src="js/navbar.js"></script>
+  <script src="js/queryCmds.js"></script>
+  <script src="js/getCurrentURL.js"></script>
+  <script src="js/userNavbarToggle.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/fashionShow.js"></script>
+  
+</body>
+</html>

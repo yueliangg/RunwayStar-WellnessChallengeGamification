@@ -1,9 +1,10 @@
 const model = require('../models/userModel');
+const utils = require('../utils/diamondCalculation');
 
 //Check User Id 
 module.exports.checkUserId = (req, res, next) => {
     const data = {
-        user_id: res.locals.userId || req.body.user_id
+        user_id: res.locals.userId || req.body.user_id 
     };
 
     if (data.user_id == undefined)
@@ -53,41 +54,6 @@ module.exports.checkUsername = (req, res, next) => {
     model.selectUserByUsername(data, callback);
 };
 
-//Creating New user
-module.exports.createNewUser = (req, res, next) => {
-
-    if (
-        req.body.username == undefined ||
-        req.body.star_name == undefined ||
-        req.body.email == undefined ||
-        req.body.password == undefined
-    ) {
-        return res.status(400).json({
-            message: "Username, email, password, or star name is undefined."
-        });
-    }
-
-    const data = {
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        star_name: req.body.star_name
-    };
-
-    const callback = (error,results, fields) => {
-        if (error) {
-            console.log("Error: CreateNewUser:", error);
-            return res.status(500).json(error);
-        }
-
-        res.locals.user_id = results.insertId;
-        next();
-    }
-
-    model.insertUser(data, callback);
-};
-
-
 //Get User By ID
 module.exports.getUser = (req, res, next) => {
     const user_id = res.locals.userId || res.locals.user_id;
@@ -130,18 +96,12 @@ module.exports.getAllUser = (req, res, next) => {
 
 //Update User 
 module.exports.updateUser = (req, res, next) => {
-    if (req.body.username == undefined || 
-        req.body.star_name == undefined ||
-        req.body.points == undefined ||
-        req.body.diamonds == undefined)
-        return res.status(400).json({message: "user_id or star_name or points or diamonds undefined"})
+    if (req.body.star_name == undefined )
+        return res.status(400).json({message: " star_name undefined"})
 
     const data = {
         user_id: res.locals.userId,
-        username: req.body.username,
-        star_name: req.body.star_name,
-        points: req.body.points,
-        diamonds: req.body.diamonds
+        star_name: req.body.star_name
     };
 
     const callback = (error, results, fields) => {
@@ -155,17 +115,13 @@ module.exports.updateUser = (req, res, next) => {
     model.updateUser(data, callback)
 };
 
-//update diamonds for top 3 runway Star
+// Update diamonds for top 3 runway stars
 module.exports.updateDiamondsForWinners = (req, res, next) => {
-    const top3 = res.locals.top3; // array of top 3 from previous middleware
-    const rewards = [100, 50, 20];
+    const top3 = res.locals.top3; 
 
     // Map top 3 into array of arrays: [diamonds, user_id]
     const data = {
-        values: top3.map((entry, index) => [
-            rewards[index],  // diamonds to add
-            entry.user_id    // user id
-        ])
+        values: utils.diamondCal                       
     };
 
     const callback = (error, results) => {
@@ -178,7 +134,6 @@ module.exports.updateDiamondsForWinners = (req, res, next) => {
 
     model.updateDiamondsForWinner(data, callback);
 };
-
 
 // Check Username or Email Exist
 module.exports.checkUsernameOrEmailExist = (req, res, next) => {
@@ -213,7 +168,6 @@ module.exports.checkUsernameOrEmailExist = (req, res, next) => {
 
 // Register User (Create)
 module.exports.register = (req, res, next) => {
-    // We use hash here, not the raw password
     const data = {
         username: req.body.username,
         email: req.body.email,
@@ -233,10 +187,7 @@ module.exports.register = (req, res, next) => {
         } 
         
         else {
-            //For sendToken: They send res.locals message & token
             res.locals.message = `User ${data.username} created successfully.`; 
-
-            //For generateToken: They save res.locals.userId into token payload
             res.locals.userId = results.insertId; 
             next();
         }
@@ -263,14 +214,18 @@ module.exports.login = (req, res, next) => {
         } 
         
         else {
+            console.log("=== DEBUG LOGIN ===");
+            console.log("Results:", results);
+            console.log("Results length:", results.length);
+            console.log("First result:", results[0]);
+            console.log("Password field:", results[0]?.password);
+            console.log("==================");
             if (results.length == 0) {
                 return res.status(404).json({message: "User not found"});
             } 
 
             else {
-                // For comparePassword: hashed password is saved into res.locals.hash
                 res.locals.hash = results[0].password;
-                // For generateToken: Matching userId for input username is saved. 
                 res.locals.userId = results[0].id;
                 
                 next();
@@ -280,3 +235,78 @@ module.exports.login = (req, res, next) => {
 
     model.selectUserByUsername(data, callback);
 };
+
+// Update attraction score for a user
+module.exports.updateAttractionScore = (req, res, next) => {
+    const data = {
+        user_id: res.locals.userId || req.params.user_id || req.body.user_id,
+        attraction_score: res.locals.total_score
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.log("Error updateAttractionScore:", error);
+            return res.status(500).json(error);
+        }
+        next(); 
+    };
+
+    model.updateAttractionScore(data, callback);
+};
+
+module.exports.updateAvatar = (req, res) => {
+    const data = {
+        user_id: res.locals.userId,           
+        avatar: req.body.avatar               
+    };
+
+    const callback = (err, result) => {
+        if (err) {
+            console.log("Error updating avatar:", err);
+            return res.status(500).json({ message: "Failed to update avatar" });
+        }
+        res.status(200).json({ message: "Avatar updated successfully", avatar: data.avatar });
+    };
+
+    model.updateAvatar(data, callback);
+};
+
+module.exports.deductPoints = (req, res, next) => {
+    const data = {
+        user_id: res.locals.userId,
+        challenge_id: req.params.challenge_id
+    };
+
+    const callback = (err, result) => {
+        if (err) {
+            console.log("Error getting challenge points:", err);
+            return res.status(500).json({ message: "Failed to deduct points" });
+        }
+
+        // store deducted points for next middleware
+        res.locals.deductPoints = result[0].points;
+        console.log(res.locals.deductPoints)
+        next();
+    };
+
+    model.getChallengePoints(data, callback);
+};
+
+module.exports.updatePoints = (req, res, next) => {
+    const data = {
+        user_id: res.locals.userId,
+        points: res.locals.deductPoints
+    };
+
+    const callback = (err, result) => {
+        if (err) {
+            console.log("Error updating points:", err);
+            return res.status(500).json({ message: "Failed to update points" });
+        }
+
+        next();
+    };
+
+    model.updateUserPoints(data, callback);
+};
+

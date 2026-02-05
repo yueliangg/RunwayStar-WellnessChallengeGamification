@@ -93,3 +93,24 @@ module.exports.addToInventory = (data, callback) => {
 
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
+
+module.exports.getNormalItems = (callback) => {
+    const SQLSTATEMENT = `
+        SELECT *
+        FROM Items
+        WHERE type = 'normal'
+        ORDER BY name ASC;
+    `;
+    pool.query(SQLSTATEMENT, callback);
+};
+
+module.exports.getExclusiveItems = (callback) => {
+    const SQLSTATEMENT = `
+        SELECT *
+        FROM Items
+        WHERE type = 'exclusive'
+        ORDER BY name ASC;
+    `;
+    pool.query(SQLSTATEMENT, callback);
+};
+

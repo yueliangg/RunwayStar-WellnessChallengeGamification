@@ -3,7 +3,7 @@ const model = require('../models/inventoryModel');
 // Check user has not bought this item yet
 module.exports.checkUserAlreadyOwnsItem = (req, res, next) => {
     const data = {
-        user_id: req.body.user_id,
+        user_id: res.locals.userId || req.body.user_id,
         item_id: req.params.item_id
     };
 
@@ -79,7 +79,7 @@ module.exports.getPurchasedInventoryById = (req, res, next) => {
 // Check if inventory item exists and ownership
 module.exports.checkInventory = (req, res, next) => {
     const data = {
-        inventory_id: req.params.inventory_id
+        inventory_id: req.body.inventory_id
     };
 
     const callback = (error, results) => {
@@ -92,7 +92,7 @@ module.exports.checkInventory = (req, res, next) => {
             return res.status(404).json({ message: "Inventory item not found" });
         }
 
-        if (results[0].user_id !== req.body.user_id)
+        if (results[0].user_id !== res.locals.userId)
             return res.status(403).json({ message: "You are not the owner." });
 
         // Attach inventory row to res.locals
@@ -108,7 +108,7 @@ module.exports.updateEquipStatus = (req, res, next) => {
     const inventory = res.locals.inventory;
 
     const data = {
-        inventory_id: req.params.inventory_id,
+        inventory_id: req.body.inventory_id,
         is_equipped: req.body.is_equipped
     };
 
@@ -141,7 +141,7 @@ module.exports.updateEquipStatus = (req, res, next) => {
 //get inventory by inventory Id
 module.exports.getInventoryById = (req, res, next) => {
     const data = {
-        inventory_id: req.params.inventory_id
+        inventory_id: req.body.inventory_id
     };
 
     const callback = (error, results) => {
@@ -153,7 +153,7 @@ module.exports.getInventoryById = (req, res, next) => {
         if (results.length === 0) {
             return res.status(404).json({ message: "Inventory item not found" });
         }
-        res.locals.data = results[0]
+        res.locals.data = results[0];
         next();
     };
 
@@ -163,7 +163,7 @@ module.exports.getInventoryById = (req, res, next) => {
 // Calculate attraction score middleware
 module.exports.calculateAttractionScore = (req, res, next) => {
     const data = {
-        user_id: req.params.user_id || req.body.user_id
+        user_id: res.locals.userId || req.body.user_id
     };
 
     const callback = (error, results) => {

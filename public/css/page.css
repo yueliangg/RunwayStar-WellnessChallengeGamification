@@ -1,0 +1,47 @@
+/* ===========================
+   Overall Page Styles
+   =========================== */
+
+/* Page Background – applied to ALL pages */
+body {
+  min-height: 100vh;
+
+  /* Gradient + image */
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(219, 193, 237, 0.363),
+      rgba(200, 168, 220, 0.37)
+    ),
+    var(--bg-auth-image);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  /* Typography */
+  font-family: var(--font-body);
+}
+
+
+h1, h2, h3, .brand, .logo-text {
+  font-family: var(--font-heading);
+  letter-spacing: 0.5px;
+}
+
+
+/* Auth page background */
+.auth-page {
+  min-height: 100vh;
+  background-image: 
+    linear-gradient(
+      var(--bg-auth-gradient-start),
+      var(--bg-auth-gradient-end)
+    ),
+    url("https://raw.githubusercontent.com/yueliangg/images/main/bg_img1.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}

@@ -19,28 +19,30 @@ router.get('/:fashion_show_id',
     sendResponse
 )
 
-// Route: POST /fashion-show-entry/:fashion_show_id/enter
+// Route: POST /fashion-show-entry/enter
 // Description: User enters a fashion show
-router.post(
-    '/:fashion_show_id/enter',
+router.post('/enter',
+    jwtMiddleware.verifyToken,
     userController.checkUserId,                    
     fashionShowController.getFashionShow,          
     fashionShowEntryController.checkUserEntry,     
     inventoryController.calculateAttractionScore,   
-    fashionShowEntryController.enterFashionShow,    
-    fashionShowEntryController.getUserEntry,        
+    fashionShowEntryController.enterFashionShow,
+    fashionShowController.addParticipants,    
+    fashionShowEntryController.getUserEntry,      
     withMessage("User entered Fashion Show Successfully.", 201),
     sendResponse
 );
 
-// Route: DELETE /fashion-show-entry/:fashion_show_id/:user_id
+// Route: DELETE /fashion-show-entry/:fashion_show_id
 // Description: Remove a user's entry from a fashion show completely
 router.delete('/:fashion_show_id',
     jwtMiddleware.verifyToken,
-    userController.checkUserId,                    
-    fashionShowController.getFashionShow,        
-    fashionShowEntryController.deleteEntry,        
-    runwayStarController.deleteEntry,           
+    userController.checkUserId,
+    fashionShowController.checkCompleted,                    
+    fashionShowController.getFashionShow,
+    fashionShowController.reduceParticipants,          
+    fashionShowEntryController.deleteEntry,          
     withMessage("User entry deleted Successfully.", 204),
     sendResponse
 );

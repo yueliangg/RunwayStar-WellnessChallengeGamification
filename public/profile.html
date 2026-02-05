@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>My Runway Star - Profile</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+  <link href="css/color.css" rel="stylesheet" />
+  <link href="css/page.css" rel="stylesheet" />
+  <link href="css/buttons.css" rel="stylesheet" />
+  <link href="css/cards.css" rel="stylesheet" />
+  <link href="css/navbar.css" rel="stylesheet" />
+  <link href="css/footer.css" rel="stylesheet" />
+  <link href="css/items.css" rel="stylesheet" />
+  <link href="css/userStat.css" rel="stylesheet" />
+  <link href="css/profileStatsCard.css" rel="stylesheet" />
+  <link href="css/modal.css" rel="stylesheet" />
+
+</head>
+
+<body class="profile-page d-flex flex-column min-vh-100 auth-page">
+
+  <!-- Navbar -->
+  <div id="navbar"></div>
+
+  <!-- User info container (floating stats box will appear here when logged in on OTHER pages) -->
+  <div id="getUserInfo"></div>
+
+  <!-- Profile Content -->
+  <main class="flex-grow-1 container py-5">
+    <div class="row">
+
+      <!-- Left Column: Avatar + Stats -->
+    <div class="col-lg-4 mb-4">
+    <div class="card shadow profile-stats-card text-center p-4">
+
+    <!-- Main Avatar (drop target) -->
+    <img id="selectedAvatar" 
+     src="https://raw.githubusercontent.com/yueliangg/images/main/pfp1.jpg" 
+     alt="User Avatar" 
+     class="profile-avatar img-fluid mb-3">
+
+    <h3 id="star_name" class="star-name">
+      Star Name 
+      <i class="fas fa-pen-to-square" id="edit_star_name"></i>
+    </h3>
+    <p id="username">Username </p>
+
+    <div class="stats-divider mt-4 mb-3"></div>
+
+    <div class="stat-row">
+      <i class="fas fa-fire stat-icon text-warning"></i>
+      <span class="stat-label">Attraction</span>
+      <span class="stat-value" id="attraction_score">0</span>
+    </div>
+
+    <div class="stat-row">
+      <i class="fas fa-coins stat-icon text-success"></i>
+      <span class="stat-label">Points</span>
+      <span class="stat-value" id="points">0</span>
+    </div>
+
+    <div class="stat-row">
+      <i class="fas fa-gem stat-icon text-info"></i>
+      <span class="stat-label">Diamonds</span>
+      <span class="stat-value" id="diamonds">0</span>
+    </div>
+
+    <!-- Draggable Avatars -->
+    <div class="avatar-options d-flex justify-content-center gap-3 mt-4">
+      <img src="https://raw.githubusercontent.com/yueliangg/images/main/pfp1.jpg" class="avatar-choice img-thumbnail" draggable="true" data-avatar="pfp1.jpg">
+          <img src="https://raw.githubusercontent.com/yueliangg/images/main/pfp2.jpg" class="avatar-choice img-thumbnail" draggable="true" data-avatar="pfp2.jpg">
+          <img src="https://raw.githubusercontent.com/yueliangg/images/main/pfp3.jpg" class="avatar-choice img-thumbnail" draggable="true" data-avatar="pfp3.jpg">
+        </div>
+
+      </div>
+    </div>
+
+      <!-- Right Column: Equipped Items, Inventory, Fashion Shows -->
+      <div class="col-lg-8">
+
+        <!-- Equipped Items -->
+        <div class="card shadow p-4 mb-4">
+          <h4>Equipped Items</h4>
+          <div class="row" id="equippedItems">
+            <!-- Equipped items will be dynamically inserted here -->
+          </div>
+        </div>
+
+        <!-- Inventory Items -->
+        <div class="card shadow p-4 mb-4">
+          <h4>Inventory</h4>
+          <div class="row" id="inventoryItems">
+            <!-- Inventory items will be dynamically inserted here -->
+          </div>
+        </div>
+
+        <!-- Fashion Shows Container -->
+        <div class="card shadow p-4 mb-4">
+          <h4>Fashion Shows</h4>
+          <div class="row" id="userFashionShows">
+            <!-- Fashion show cards will be dynamically inserted here by profile.js -->
+          </div>
+        </div>
+
+        <!-- Modal Container -->
+        <div id="modalContainer"></div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto py-3 custom-footer text-center">
+    <p class="m-0">
+      Runway Star Game &copy; 2026. Educational Project.
+    </p>
+  </footer>
+
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Project JS -->
+  <script src="js/navbar.js"></script>
+  <script src="js/queryCmds.js"></script>
+  <script src="js/getCurrentURL.js"></script>
+  <script src="js/userNavbarToggle.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/getUserInfo.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/avatar.js"></script>
+  <script src="js/getUserFashionShows.js"></script>
+
+  
+</body>
+</html>

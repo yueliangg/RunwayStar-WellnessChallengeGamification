@@ -1,0 +1,22 @@
+/* ===========================
+   Form Components
+   =========================== */
+
+/* Form labels */
+.form-label {
+  font-weight: 500;
+  color: var(--text-label);
+}
+
+/* Input fields */
+.form-control {
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid var(--border-input);
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 5px rgba(255, 105, 180, 0.3);
+}

@@ -75,7 +75,7 @@ module.exports.updateEquipStatus = (data, callback) => {
 // Get equipped items helper
 module.exports.getEquippedItemsWithScore = (data, callback) => {
     const SQLSTATEMENT = `
-        SELECT i.name, i.attraction_value
+        SELECT i.name, i.type, i.attraction_value
         FROM Inventory inv
         JOIN Items i ON inv.item_id = i.id
         WHERE inv.user_id = ? AND inv.is_equipped = 1

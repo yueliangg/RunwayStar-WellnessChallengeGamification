@@ -1,0 +1,91 @@
+
+/* Nav Pills (Tabs) */
+#showTabs {
+    background: #ffffff;        
+    border-radius: 50px;         
+    padding: 0.5rem;            
+}
+
+#showTabs .nav-link {
+    border-radius: 50px;         
+    color: #7c3aed;               
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#showTabs .nav-link:hover {
+    background-color: rgb(190, 164, 230);
+    color: #6d28d9;                       
+}
+
+#showTabs .nav-link.active {
+    background: linear-gradient(135deg, #c9b6ea 0%, #bf8dee 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+/* Badges */
+.badge.bg-purple-light {
+    background: linear-gradient(135deg, #c9b2e0 0%, #c084fc 100%) !important;
+}
+
+/* Text Colors */
+.text-purple {
+    color: #49346b !important;
+}
+
+.text-purple-light {
+    color: #dfd0ec !important;
+}
+
+/* Spinner */
+.spinner-border.text-purple {
+    color: #7c3aed !important;
+}
+
+/* Headings */
+h1 .text-warning {
+    background: linear-gradient(135deg, #e5b49d 0%, #b38473 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.store-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 3.5rem;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Section Header */
+.section-header {
+    border-left: 4px solid #7c3aed;
+    padding-left: 1rem;
+}
+
+/* Fashion Show Header */
+.fashion-show-header {
+    background: linear-gradient(135deg, #d5c5f0 0%, #cfa2fa 100%);
+}
+
+.luxury-header {
+  background: linear-gradient(to right, rgba(164, 133, 181, 0.6),
+      rgba(229, 201, 246, 0.387));
+  color: var(--bg-card);
+  padding: 60px 0 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.luxury-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23f2e1fb" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,144C960,149,1056,139,1152,128C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') bottom center no-repeat;
+  opacity: 0.3;
+}

@@ -3,7 +3,7 @@ const model = require('../models/wellnessChallengeModel');
 //Check Challenge Exists
 module.exports.checkChallengeExists = (req, res, next) => {
     const data = {
-        challenge_id: req.params.challenge_id
+        challenge_id: req.params.challenge_id 
     };
 
     const callback = (error, results, fields) => {
@@ -40,7 +40,7 @@ module.exports.checkChallengeOwner = (req, res, next) => {
 module.exports.createChallenge = (req, res, next) => {
 
     if (req.body.description == undefined ||
-        req.body.user_id == undefined ||
+        res.locals.userId == undefined ||
         req.body.points == undefined
     ){
         res.status(400).json({message: 'Description or user_id or points is undefined'})
@@ -48,7 +48,7 @@ module.exports.createChallenge = (req, res, next) => {
 
     const data = {
         description: req.body.description,
-        creator_id: req.body.user_id,
+        creator_id: res.locals.userId,
         points: req.body.points || 0
     };
 
@@ -157,7 +157,7 @@ module.exports.deleteChallenge = (req, res, next) => {
 // Delete user completions for a specific challenge
 module.exports.deleteUserCompletion = (req, res, next) => {
     const data = {
-        challenge_id: req.params.challenge_id 
+        challenge_id: req.params.challenge_id
     };
     
     if (req.params.challenge_id == undefined) {
@@ -174,15 +174,70 @@ module.exports.deleteUserCompletion = (req, res, next) => {
     model.deleteUserCompletion(data, callback);
 };
 
+
+// Delete user completions for a specific challenge
+module.exports.checkCompletionByUser = (req, res, next) => {
+    const data = {
+        challenge_id: req.params.challenge_id,
+        user_id: res.locals.userId
+    };
+    
+    if (!req.params.challenge_id) {
+        return res.status(400).json({ message: "Challenge ID required" });
+    }
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error deleting user completions:", error);
+            return res.status(500).json(error);
+        }
+
+        // Check if results exist and user owns the record
+        if (!results || results.length === 0) {
+            return res.status(404).json({ message: "Completion not found by User" });
+        }
+        next();
+    };
+
+    model.selectUserCompletionByUser(data, callback);
+};
+
+// Delete user completions for a specific challenge
+module.exports.deleteUserCompletionByUser = (req, res, next) => {
+    const data = {
+        challenge_id: req.params.challenge_id,
+        user_id: res.locals.userId
+    };
+    
+    if (!req.params.challenge_id) {
+        return res.status(400).json({ message: "Challenge ID required" });
+    }
+
+    const callback = (error, results) => {
+        if (error) {
+            console.error("Error deleting user completions:", error);
+            return res.status(500).json(error);
+        }
+
+        // Check if results exist and user owns the record
+        if (!results || results.length === 0) {
+            return res.status(404).json({ message: "Completion not found" });
+        }
+        next();
+    };
+
+    model.deleteUserCompletionById(data, callback);
+};
+
 // Create a user completion record for a challenge
 module.exports.createRecord = (req, res, next) => {
-    if (req.body.user_id == undefined ||
+    if (res.locals.userId == undefined ||
         req.body.details == undefined)
         return res.status(400).json({message: "user_id or details undefined. "})
 
     const data = {
         challenge_id: req.params.challenge_id,
-        user_id: req.body.user_id,
+        user_id: res.locals.userId || req.body.user_id,
         details: req.body.details
     };
 
@@ -203,7 +258,7 @@ module.exports.createRecord = (req, res, next) => {
 // Reward points to a user for completing a challenge
 module.exports.rewardPoints = (req, res, next) => {
     const data = {
-        user_id: req.body.user_id,
+        user_id: res.locals.userId || req.body.user_id,
         points: res.locals.challenge.points 
     };
 
@@ -258,4 +313,23 @@ module.exports.getAllCompletions = (req, res, next) => {
     };
 
     model.selectAllCompletions(data, callback);
+};
+
+// Retrieve all completions for a specific challenge
+module.exports.getAllCompletionsByUser = (req, res, next) => {
+    const data = {
+        user_id: res.locals.userId
+    };
+
+    const callback = (error, results) => {
+        if (error) {
+            console.log("Error getAllCompletionsByUser:", error);
+            return res.status(500).json(error);
+        }
+
+        res.locals.data = results; 
+        next();
+    };
+
+    model.selectAllCompletionsByUser(data, callback);
 };

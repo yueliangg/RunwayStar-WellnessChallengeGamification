@@ -1,23 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const fashionShowController = require('../controllers/fashionShowController');
 const jwtMiddleware = require('../middleware/jwtMiddleware');
-const bcryptMiddleware = require('../middleware/bcryptMiddleware');
 
 const { withMessage, sendResponse } = require('../middleware/response');
 
-//1. POST /users
-// Description: Create a new user by checking if username is available, 
-// hashing password, storing user data, and returning the created user.
-router.post('/',
-    userController.checkUsername,       
-    userController.createNewUser,      
-    userController.getUser,            
-    withMessage('User created successfully', 201),
-    sendResponse
-);
-
-//2. GET /users
+// GET /users
 // Description: Fetch all users in the system.
 router.get('/',
     userController.getAllUser,        
@@ -25,9 +14,9 @@ router.get('/',
     sendResponse
 );
 
-//3. GET /users/{user_id}
+// GET /users/me
 // Description: Fetch a specific user by user ID after verifying JWT token.
-router.get('/user',
+router.get('/me',
     jwtMiddleware.verifyToken,         
     userController.checkUserId,         
     userController.getUser,             
@@ -35,18 +24,34 @@ router.get('/user',
     sendResponse
 );
 
-//4. PUT /users/{user_id}
-// Description: Update a user's details (username, star_name, points, diamonds) 
+// PUT /users/
+// Description: Update starname
 // after verifying JWT token, ensuring username is not duplicated, 
 // then returning the updated user.
 router.put('/',
     jwtMiddleware.verifyToken,          
-    userController.checkUserId,         
-    userController.checkUsername,   
+    userController.checkUserId,  
     userController.updateUser,         
     userController.getUser,            
     withMessage("User updated successfully", 200),
     sendResponse
 );
+
+// GET /users/me/fashion-show
+// Description: get all fashion shows that user Joined
+// GET /users/me/fashion-show
+router.get(
+    '/fashion-show',
+    jwtMiddleware.verifyToken,
+    userController.checkUserId,        
+    fashionShowController.getFashionShowUser,              
+    withMessage("Fashion-shows by user fetched successfully", 200),
+    sendResponse
+);
+
+// POST /users/update-avator
+router.put("/update-avatar", 
+    jwtMiddleware.verifyToken,
+    userController.updateAvatar);
 
 module.exports = router;

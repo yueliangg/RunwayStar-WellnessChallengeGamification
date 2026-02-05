@@ -1,14 +1,18 @@
 const pool = require("../services/db");
 
+//select runwaystars by show
 module.exports.selectRunwayStarsByShow = (data, callback) => {
     const SQLSTATEMENT = `
-        SELECT *
-        FROM RunwayStar
-        WHERE show_id = ?
+        SELECT u.username, u.star_name, rs.*
+        FROM RunwayStar rs
+        INNER JOIN User u ON rs.user_id = u.id
+        WHERE rs.show_id = ?
+        ORDER BY rs.final_rank ASC
     `;
     const VALUES = [data.show_id];
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
+
 
 // Insert top 3 into RunwayStar
 module.exports.insertTop3RunwayStars = (data, callback) => {
@@ -23,17 +27,7 @@ module.exports.insertTop3RunwayStars = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
-module.exports.selectRunwayStarsByShow = (data, callback) => {
-    const SQLSTATEMENT = `
-        SELECT * FROM RunwayStar
-        WHERE show_id = ?
-        ORDER BY final_rank ASC
-    `;
-    const VALUES = [data.show_id];
-
-    pool.query(SQLSTATEMENT, VALUES, callback);
-};
-
+//select all runway stars
 module.exports.selectAllFinalRunwayStars = (callback) => {
     const SQLSTATEMENT = `
         SELECT *
@@ -44,6 +38,7 @@ module.exports.selectAllFinalRunwayStars = (callback) => {
     pool.query(SQLSTATEMENT, callback);
 };
 
+//delete entry
 module.exports.deleteEntry = (data, callback) => {
     const SQLSTATEMENT = `
         DELETE FROM RunwayStar
@@ -54,3 +49,23 @@ module.exports.deleteEntry = (data, callback) => {
 
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
+
+//Get rank
+module.exports.getUserRank = (data, callback) => {
+    const SQLSTATEMENT = `
+        SELECT 
+            rs.user_id,
+            rs.total_attraction,
+            fs.status,
+            rs.final_rank
+        FROM RunwayStar rs
+        INNER JOIN FashionShow fs 
+            ON rs.show_id = fs.id
+        WHERE rs.show_id = ? AND rs.user_id = ?
+    `;
+    
+    const VALUES = [data.fashion_show_id, data.user_id];
+
+    pool.query(SQLSTATEMENT, VALUES, callback);
+};
+

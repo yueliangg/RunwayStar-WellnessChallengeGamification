@@ -1,0 +1,13 @@
+/* ===========================
+   Footer Component
+   =========================== */
+
+footer {
+  font-size: 0.9rem;
+  background-color: var(--bg-footer);
+  color: var(--btn-auth-color);
+}
+
+.custom-footer {
+  background-color: var(--bg-footer);
+}

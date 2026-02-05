@@ -1,29 +1,5 @@
 const model = require('../models/runwayStarModel');
 
-//Check if the show_id was already finalised
-module.exports.checkNotFinalized = (req, res, next) => {
-    const data = {
-        show_id: req.body.fashion_show_id
-    };
-
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error checkNotFinalized:", error);
-            return res.status(500).json(error);
-        }
-
-        if (results.length > 0) {
-            return res.status(409).json({
-                message: "Fashion show already finalized"
-            });
-        }
-
-        next();
-    };
-
-    model.selectRunwayStarsByShow(data, callback);
-};
-
 // Insert top 3 runway stars after fashion show is finalized
 // - Receives top 3 entries from res.locals
 // - Calculates final ranks and diamond rewards
@@ -113,5 +89,37 @@ module.exports.deleteEntry = (req, res, next) => {
 
     model.deleteEntry(data, callback)
 };
+
+//Get User Rank: state ranked top 1,2,3 or unranked
+module.exports.getUserRank = (req, res, next) => {
+    const data = {
+        fashion_show_id: req.params.fashion_show_id,
+        user_id: res.locals.userId
+    };
+
+    const callback = (err, results) => {
+        if (err) {
+            console.error("Error getUserRank:", err);
+            return res.status(500).json({ message: "Internal server error" });
+        }
+        
+        // If no results, user is unranked (not in top 3)
+        if (!results || results.length === 0) {
+            res.locals.data = {
+                user_id: data.user_id,
+                final_rank: null,
+                total_attraction: 0,
+                status: "unranked"
+            };
+        } else {
+            res.locals.data = results[0];
+        }
+        
+        next();
+    };
+
+    model.getUserRank(data, callback);
+};
+
 
 

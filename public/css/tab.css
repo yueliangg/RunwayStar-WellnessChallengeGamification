@@ -1,0 +1,29 @@
+.store-tabs {
+  background: #fff;
+  border-radius: 50px;
+  padding: 5px;
+  display: inline-flex;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  border: 2px solid var(--border-input);
+}
+
+.store-tab {
+  padding: 15px 40px;
+  border-radius: 50px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.store-tab:hover {
+  color: var(--btn-auth-bg);
+}
+
+.store-tab.active {
+  background: linear-gradient(135deg, var(--btn-auth-bg) 0%, var(--text-link) 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(142, 91, 191, 0.3);
+}

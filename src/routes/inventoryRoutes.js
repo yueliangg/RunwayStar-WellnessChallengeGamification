@@ -16,14 +16,15 @@ router.get('/',
     sendResponse
 );
 
-// Route: PUT /inventory/:inventory_id/update-equip
+// Route: PUT /inventory/update-equip
 // Description: Update the equip status of an inventory item
 router.put(
-  "/:inventory_id/update-equip",
+  "/update-equip",
+  jwtMiddleware.verifyToken,
   userController.checkUserId,                       
   inventoryController.checkInventory,              
   inventoryController.updateEquipStatus,            
-  inventoryController.getInventoryById,             
+  inventoryController.getInventoryById,         
   withMessage("Item equip status updated", 200),
   sendResponse
 );
@@ -31,9 +32,11 @@ router.put(
 // Route: GET /inventory/:user_id/attraction-score
 // Description: Calculate the user's total attraction score based on currently equipped items
 router.get(
-    '/:user_id/attraction-score',
+    '/attraction-score',
+    jwtMiddleware.verifyToken,
     userController.checkUserId,                    
-    inventoryController.calculateAttractionScore,   
+    inventoryController.calculateAttractionScore,
+    userController.updateAttractionScore,   
     withMessage("Item equip status updated", 200),
     sendResponse
 

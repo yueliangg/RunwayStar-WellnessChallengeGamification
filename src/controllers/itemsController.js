@@ -124,7 +124,7 @@ module.exports.checkItemNameExists = (req, res, next) => {
 //  Check if user has enough points/diamonds
 module.exports.checkUserHasCurrency = (req, res, next) => {
     const data = { 
-        user_id: req.body.user_id
+        user_id: res.locals.userId || req.body.user_id
     };
 
     const callback = (error, results) => {
@@ -174,7 +174,7 @@ module.exports.deductCurrency = (req, res, next) => {
 // Add item to inventory
 module.exports.addToInventory = (req, res, next) => {
     const data = {
-        user_id: req.body.user_id,
+        user_id: res.locals.userId || req.body.user_id,
         item_id: req.params.item_id,
         is_equipped: false
     };
@@ -188,4 +188,37 @@ module.exports.addToInventory = (req, res, next) => {
     };
 
     model.addToInventory(data, callback);
+};
+module.exports.getNormalItems = (req, res, next) => {
+    const callback = (err, results) => {
+        if (err) {
+            console.log("Error getNormalItems:", err);
+            return res.status(500).json(err);
+        }
+        
+        // Initialize res.locals.data if it doesn't exist
+        res.locals.data = res.locals.data || {};
+        res.locals.data.normal = results;
+
+        next();
+    };
+
+    model.getNormalItems(callback);
+};
+
+module.exports.getExclusiveItems = (req, res, next) => {
+    const callback = (err, results) => {
+        if (err) {
+            console.log("Error getExclusiveItems:", err);
+            return res.status(500).json(err);
+        }
+
+        // Initialize res.locals.data if it doesn't exist
+        res.locals.data = res.locals.data || {};
+        res.locals.data.exclusive = results;
+
+        next();
+    };
+
+    model.getExclusiveItems(callback);
 };

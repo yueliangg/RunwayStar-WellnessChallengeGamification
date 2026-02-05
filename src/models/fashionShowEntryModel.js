@@ -1,5 +1,6 @@
 const pool = require('../services/db');
 
+//Select All UserEntries by Show id
 module.exports.selectAllUserEntries = (data, callback) => {
     const SQLSTATEMENT = `
         SELECT * FROM FashionShowEntry
@@ -10,6 +11,7 @@ module.exports.selectAllUserEntries = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
+//Insert Fashion Show Entry
 module.exports.addFashionShowEntry = (data, callback) => {
     const SQLSTATEMENT = `
         INSERT INTO FashionShowEntry (show_id, user_id, attraction_score)
@@ -21,6 +23,7 @@ module.exports.addFashionShowEntry = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
+//get fashion show entry by user_id and show_id
 module.exports.getFashionShowEntry = (data, callback) => {
     const SQLSTATEMENT = `
         SELECT * FROM FashionShowEntry
@@ -30,6 +33,7 @@ module.exports.getFashionShowEntry = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
+//select top 3 attraction score
 module.exports.selectTop3ByAttraction = (data, callback) => {
     const SQLSTATEMENT = `
         SELECT user_id, attraction_score
@@ -54,3 +58,13 @@ module.exports.deleteEntry = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
+// Delete fashion show entry By Show_id
+module.exports.deleteEntryByShow = (data, callback) => {
+    const SQLSTATEMENT = `
+        DELETE FROM FashionShowEntry
+        WHERE show_id = ?
+    `;
+    const VALUES = [data.fashion_show_id];
+
+    pool.query(SQLSTATEMENT, VALUES, callback);
+};

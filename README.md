@@ -120,44 +120,85 @@ npm run dev
 * The app will run at `http://localhost:3000`.
 
 ---
-
-
-
-## User API Endpoints
-
-### 1. Create User
-**POST** `/users`
-
-Creates a new user.
-
-**Request Body:**  
-```json
-{
-  "username": "Thawdar",
-  "star_name": "yueliang"
-}
-```
-
-**Respond:**  
-```json
-{
-    "id": 9,
-    "username": "thawdarr",
-    "star_name": "baybay",
-    "points": 0,
-    "diamonds": 0
-}
-```
-**Success Response**
-- `201 Created`
-
-**Error Responses**
-- `400 Bad Request` – Request body is missing `username`
-- `409 Conflict` – Username is already associated with another user
+Got it! Here's your **login and registration routes** rewritten in the same format as your example:
 
 ---
 
-### 2. Get All Users
+## Authentication API Endpoints
+
+### 1. Login User
+
+**POST** `/authentication/login`
+
+Authenticate a user by checking login credentials, comparing the password with the stored hash, generating a JWT token, and sending the token back to the client.
+
+**Request Body:**
+
+```json
+{
+  "username": "Dashi",
+  "password": "1234"
+}
+```
+
+**Response:**
+
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInRpbWVzdGFtcCI6IjIwMjYtMDEtMjhUMDk6MDE6MTguNTUwWiIsImlhdCI6MTc2OTU5MDg3OCwiZXhwIjoxNzY5Njc3Mjc4fQ.KKeVFLHCpMOR9AHOqVNK8TPZCPdtbFO0tpAdmU4iv84"
+}
+```
+
+**Success Response**
+
+* `200 OK`
+
+**Error Responses**
+
+* `401 Unauthorized` – Invalid username or password
+
+---
+
+### 2. Register User
+
+**POST** `/authentication/register`
+
+Register a new user by checking username/email availability, hashing the password, creating the user record, generating a JWT token, and sending the token back to the client.
+
+**Request Body:**
+
+```json
+{
+  "username": "Dashi",
+  "email": "dashi@example.com",
+  "password": "1234",
+  "star_name": "Dashi"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "User Dashi created successfully.",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsInRpbWVzdGFtcCI6IjIwMjYtMDEtMjhUMDk6MDA6MTcuMTkyWiIsImlhdCI6MTc2OTU5MDgxNywiZXhwIjoxNzY5Njc3MjE3fQ.EiWfLoW6ANtYBfAo90GJZDzWsQNMQ1wJlunaSHbq9vU"
+}
+```
+
+**Success Response**
+
+* `201 Created`
+
+**Error Responses**
+
+* `400 Bad Request` – Username or email is missing
+* `409 Conflict` – Username or email already exists
+
+---
+
+## User API Endpoints
+
+### 1. Get All Users
 **GET** `/users`
 
 Retrieves all users.
@@ -167,7 +208,7 @@ Retrieves all users.
 
 ---
 
-### 3. Get User by ID
+### 2. Get User by ID
 **GET** `/users/{user_id}`
 
 Retrieves a specific user.
@@ -180,7 +221,7 @@ Retrieves a specific user.
 
 ---
 
-### 4. Update User
+### 3. Update User
 **PUT** `/users/{user_id}`
 
 Updates user information.
@@ -211,6 +252,47 @@ Updates user information.
 **Error Responses**
 - `404 Not Found` – Requested `user_id` does not exist
 - `409 Conflict` – Username is already associated with another user
+
+
+Sure! Here's your **fashion show endpoint** documented in the same format as your previous examples:
+
+---
+
+### 4. Get User's Fashion Shows
+
+**GET** `/users/fashion-show`
+
+Retrieve all fashion shows that the authenticated user has joined.
+
+**Request Headers:**
+
+```http
+Authorization: Bearer <JWT token>
+```
+
+**Response:**
+
+```json
+[
+    {
+        "id": 4,
+        "date": "2025-12-25",
+        "description": "Winter Glam Runway Show",
+        "show_id": 1,
+        "user_id": 1,
+        "attraction_score": 25
+    }
+]
+```
+
+**Success Response**
+
+* `200 OK`
+
+**Error Responses**
+
+* `401 Unauthorized` – Missing or invalid JWT token
+* `404 Not Found` – User not found or user has not joined any fashion shows
 
 ---
 ## Wellness Challenge endpoints
@@ -565,7 +647,7 @@ Retrieve the full inventory for a specific user.
 
 ## 2. Update Inventory Equip Status
 
-**PUT** `/inventory/:inventory_id/update-equip`
+**PUT** `/inventory/update-equip`
 
 Update the `is_equipped` status (0 or 1) of an inventory item.
 
@@ -582,7 +664,8 @@ Update the `is_equipped` status (0 or 1) of an inventory item.
 
 ```json
 {
-   "user_id": 3,
+    "inventory_id": 2,
+   "user_id": 1,
    "is_equipped": 1
 }
 ```
@@ -591,10 +674,10 @@ Update the `is_equipped` status (0 or 1) of an inventory item.
 
 ```json
 {
-    "id": 7,
-    "user_id": 3,
-    "item_id": 1,
-    "is_equipped": 1
+    "id": 2,
+    "user_id": 1,
+    "item_id": 2,
+    "is_equipped": 0
 }
 ```
 
@@ -785,7 +868,7 @@ Fetch all user entries for a specific fashion show.
 
 ## 2. Enter a Fashion Show
 
-**POST** `/fashion-show-entry/:fashion_show_id/enter`
+**POST** `/fashion-show-entry/enter`
 
 Allows a user to enter a fashion show. User's attraction score is calculated based on equipped items.
 
@@ -793,6 +876,7 @@ Allows a user to enter a fashion show. User's attraction score is calculated bas
 
 ```json
 {
+    "fashion_show_id": 2,
     "user_id": 2
 }
 ```
