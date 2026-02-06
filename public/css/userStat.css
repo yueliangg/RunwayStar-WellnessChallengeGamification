@@ -1,10 +1,8 @@
-/* ===========================
-   User Stats Float Box Component
-   =========================== */
+/* User Stats Float Box Component*/
 
 .user-stats-float {
   position: fixed;
-  top: 70px; /* Adjust based on your navbar height */
+  top: 70px;
   left: 20px;
   background: linear-gradient(135deg, var(--bg-header) 0%, var(--btn-auth-bg-hover) 100%);
   color: white;
@@ -13,7 +11,7 @@
   box-shadow: 0 8px 25px rgba(206, 187, 219, 0.4);
   z-index: 1000;
   min-width: 220px;
-  display: none; /* Hidden by default */
+  display: none; 
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;

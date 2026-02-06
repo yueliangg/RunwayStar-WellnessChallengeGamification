@@ -1,13 +1,15 @@
+/* ===== Color Theme ===== */
 :root {
   /* Backgrounds */
   --bg-card: #f2e1fb;              
-  --bg-footer: #b692cd;           
-  --bg-header: #b692cd;
+  --bg-footer: #9e77cef0;          
+  --bg-header: #9f7acdf0;
 
   /* Auth background */
-  --bg-auth-gradient-start: rgba(206, 166, 229, 0.55);
+  --bg-auth-gradient-start: rgba(192, 134, 225, 0.55);
   --bg-auth-gradient-end: rgba(185, 148, 210, 0.65);
   --bg-auth-image: url("https://raw.githubusercontent.com/yueliangg/images/main/bg_img1.png");
+  --bg-auth-gif: url("https://raw.githubusercontent.com/yueliangg/images/main/gif.gif");
 
   /* Buttons */
   --btn-auth-bg: #8e5bbf;           
@@ -27,4 +29,3 @@
   --font-heading: "Playfair Display", serif;
   --font-body: "Poppins", sans-serif;
 }
-

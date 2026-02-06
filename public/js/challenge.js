@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!token) return;
 
     eventListeners(token);
-    
     loadAllUserData(token);
 });
 
@@ -139,7 +138,7 @@ function createAcceptedChallengeCard(challenge, token) {
     return card;
 }
 
-// Display User Completions (NO FETCH - uses data from /api/users/me)
+// Display User Completions 
 function displayUserCompletions(responseData, token) {
     if (!responseData || !responseData.userCompletions) {
         console.error("No user completions data provided");
@@ -162,11 +161,10 @@ function displayUserCompletions(responseData, token) {
         acceptedList.appendChild(card);
     });
 
-    // IMPORTANT: Load all challenges AFTER we have the accepted IDs
     loadAllChallenges(token);
 }
 
-// Load and Render Available Challenges (Still needs separate fetch - not user-specific)
+// Load and Render Available Challenges
 function loadAllChallenges(token) {
     const callback = (responseStatus, responseData) => {
         const challenges = responseData;

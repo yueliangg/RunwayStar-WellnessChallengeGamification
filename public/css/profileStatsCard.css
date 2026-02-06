@@ -1,7 +1,6 @@
-/* ===========================
-   Profile Stats Card Component
-   =========================== */
+/* ===== PROFILE STATS CARD COMPONENT ===== */
 
+/* Main profile stats card with gradient background */
 .profile-stats-card {
   background: linear-gradient(135deg, var(--bg-header) 0%, var(--btn-auth-bg-hover) 100%);
   color: white;
@@ -11,11 +10,13 @@
   backdrop-filter: blur(10px);
 }
 
+/* Card hover effect with lift and shadow */
 .profile-stats-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 35px rgba(201, 170, 196, 0.5) !important;
 }
 
+/* Profile avatar image styling */
 .profile-avatar {
   max-width: 150px;
   border-radius: 50%;
@@ -24,10 +25,12 @@
   transition: transform 0.3s ease;
 }
 
+/* Avatar hover zoom effect */
 .profile-avatar:hover {
   transform: scale(1.05);
 }
 
+/* User name/star name heading */
 .star-name {
   font-weight: 700;
   font-size: 1.5em;
@@ -35,6 +38,7 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* Divider line between sections */
 .stats-divider {
   width: 60%;
   height: 2px;
@@ -42,6 +46,7 @@
   margin: 20px auto;
 }
 
+/* Individual stat row container */
 .stat-row {
   display: flex;
   align-items: center;
@@ -53,16 +58,19 @@
   transition: all 0.2s ease;
 }
 
+/* Stat row hover effect */
 .stat-row:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateX(5px);
 }
 
+/* Stat icon styling */
 .stat-icon {
   font-size: 1.3em;
   margin-right: 10px;
 }
 
+/* Stat label text */
 .stat-label {
   flex-grow: 1;
   text-align: left;
@@ -70,6 +78,7 @@
   font-weight: 500;
 }
 
+/* Stat value display */
 .stat-value {
   font-weight: bold;
   font-size: 1.3em;
@@ -80,7 +89,7 @@
   text-align: center;
 }
 
-/* Icon colors */
+/* Icon color variations */
 .stat-icon.text-warning {
   color: #ffc107 !important;
 }
@@ -93,13 +102,16 @@
   color: #87ceeb !important;
 }
 
-/* Responsive design */
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet view adjustments */
 @media (max-width: 991px) {
   .profile-stats-card {
     margin-bottom: 20px;
   }
 }
 
+/* Mobile view adjustments */
 @media (max-width: 768px) {
   .star-name {
     font-size: 1.3em;
@@ -115,6 +127,9 @@
   }
 }
 
+/* ===== AVATAR CUSTOMIZATION ===== */
+
+/* Profile avatar with fixed dimensions */
 .profile-avatar {
   width: 120px;
   height: 120px;
@@ -123,6 +138,7 @@
   border: 3px solid var(--btn-auth-bg);
 }
 
+/* Avatar selection option */
 .avatar-choice {
   width: 80px;
   height: 80px;
@@ -132,17 +148,21 @@
   transition: transform 0.2s, border 0.2s;
 }
 
+/* Avatar choice hover effect */
 .avatar-choice:hover {
   transform: scale(1.1);
   border-color: var(--btn-auth-bg-hover);
 }
 
-/* Editable field styles */
+/* ===== EDITABLE FIELDS ===== */
+
+/* Editable field base styling */
 .editable-field {
     display: inline;
     transition: all 0.2s ease;
 }
 
+/* Editable field focus state */
 .editable-field:focus {
     outline: none;
     border: 1px solid #007bff !important;
@@ -151,6 +171,7 @@
     background-color: #f8f9fa !important;
 }
 
+/* Edit icon button */
 .edit-icon {
     font-size: 18px;
     margin-left: 10px;
@@ -160,6 +181,7 @@
     transition: all 0.2s ease;
 }
 
+/* Edit icon hover effect */
 .edit-icon:hover {
     opacity: 1;
     color: #007bff;

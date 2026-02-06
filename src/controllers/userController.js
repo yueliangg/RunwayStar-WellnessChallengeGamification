@@ -266,12 +266,6 @@ module.exports.login = (req, res, next) => {
         } 
         
         else {
-            console.log("=== DEBUG LOGIN ===");
-            console.log("Results:", results);
-            console.log("Results length:", results.length);
-            console.log("First result:", results[0]);
-            console.log("Password field:", results[0]?.password);
-            console.log("==================");
             if (results.length == 0) {
                 return res.status(404).json({message: "User not found"});
             } 

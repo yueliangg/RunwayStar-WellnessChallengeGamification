@@ -147,7 +147,7 @@ function showErrorModal(title, message) {
     );
 }
 
-// Show error in container (this doesn't need modal.js - it's for inline errors)
+// Show error in container
 function showError(container, message) {
     container.innerHTML = `
         <div class="col-12 text-center py-5">

@@ -8,7 +8,6 @@ function displayUserFashionShows(responseData, token) {
         return;
     }
 
-    // Extract fashion shows from the combined response
     const fashionShows = responseData.userFashionShow || [];
     
     // Store shows globally
@@ -185,7 +184,6 @@ function deleteFashionShowEntry(showId, token, modal) {
                 );
             }
 
-            // Also update the global fashionShowsArray
             fashionShowsArray = fashionShowsArray.filter(
                 entry => entry.show_id !== showIdNum
             );

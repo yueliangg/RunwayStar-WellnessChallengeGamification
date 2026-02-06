@@ -1,8 +1,6 @@
-/* ===========================
-   Navbar Component
-   =========================== */
+/* ===== HEADER / NAVBAR ===== */
 
-/* Header / Navbar */
+/* Fixed header with full width */
 .custom-header {
   position: fixed;
     top: 0;
@@ -13,38 +11,43 @@
   background-color: var(--bg-header);
 }
 
-/* Add padding to body so content doesn't hide under navbar */
+/* Body padding to prevent content hiding under fixed navbar */
 body {
-    padding-top: 70px; /* adjust based on your navbar height */
+    padding-top: 70px;
 }
-/* Navbar links hover effect */
+
+/* Navbar link default styling */
 .custom-header .nav-link {
   color: var(--text-navbar);
   transition: color 0.3s;
 }
 
+/* Navbar link hover effect */
 .custom-header .nav-link:hover {
   color: var(--text-link-hover);
 }
 
-/* Navbar brand/logo text */
+/* Navbar brand/logo styling */
 .custom-header .navbar-brand {
   color: var(--text-navbar);
   font-weight: 600;
 }
 
+/* Navbar brand hover effect */
 .custom-header .navbar-brand:hover {
   color: var(--text-link-hover);
 }
 
-/* Links */
+/* ===== LINKS ===== */
+
+/* Default link styling */
 a {
   color: var(--text-link);
   text-decoration: none;
 }
 
+/* Link hover effect */
 a:hover {
   text-decoration: underline;
   color: var(--text-link-hover);
 }
-

@@ -1,8 +1,6 @@
 //DomContent
 document.addEventListener("DOMContentLoaded", function () {
   const callback = (responseStatus, responseData) => {
-    console.log("responseStatus:", responseStatus);
-    console.log("responseData:", responseData);
     if (responseStatus == 200) {
       if (responseData.token) {
         localStorage.setItem("token", responseData.token);

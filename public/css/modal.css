@@ -1,4 +1,10 @@
-/* Results Heading */
+/* ===== MODALS ===== */
+
+/* Results section heading in modal */
+#modal  {
+    z-index: 1000;
+}
+
 #modal .results-heading {
     margin-bottom: 2.5rem;
     color: rgba(255, 255, 255, 0.8);
@@ -8,7 +14,7 @@
     font-weight: 500;
 }
 
-/* Modal Header - Purple Gradient */
+/* Modal header with purple gradient */
 #modal .modal-header {
     background: linear-gradient(135deg, #c9b2e0 0%, #c084fc 100%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -16,6 +22,7 @@
     color: #fff;
 }
 
+/* Modal title styling */
 #modal .modal-title {
     color: #fff;
     font-weight: 600;
@@ -23,51 +30,59 @@
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Modal body with gradient background */
 #modal .modal-body {
     padding: 2rem;
     background: linear-gradient(135deg, #c9b2e0 0%, #dcc8ef 100%);
     color: #fff;
 }
 
+/* Modal footer with purple gradient */
 #modal .modal-footer {
     background: linear-gradient(135deg, #c9b2e0 0%, #c084fc 100%);
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     padding: 1rem 2rem;
 }
 
+/* Modal dialog container sizing */
 #modal .modal-dialog {
     max-width: 500px;  
     margin: 1.75rem auto; 
 }
 
+/* Modal body padding override */
 #modal .modal-body {
     padding: 1.5rem 1.5rem;
 }
 
-/* Success Modal */
+/* Success modal header with green gradient */
 #modal .modal-header.success-modal {
     background: linear-gradient(135deg, #b1ead2 0%, #4a947c 100%) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/* Success modal body with light green background */
 #modal .success-modal-body {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
 }
 
+/* Success icon shadow effect */
 #modal .success-modal-body .text-success {
     filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.4));
 }
 
-/* Error Modal */
+/* Error modal header with red gradient */
 #modal .modal-header.error-modal {
     background: linear-gradient(135deg, #ed9c9c 0%, #c76a6a 100%) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/* Error modal body with light red background */
 #modal .error-modal-body {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
 }
 
+/* Error icon shadow effect */
 #modal .error-modal-body .text-danger {
     filter: drop-shadow(0 2px 8px rgba(239, 68, 68, 0.4));
 }

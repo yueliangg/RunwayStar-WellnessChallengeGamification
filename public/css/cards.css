@@ -1,17 +1,17 @@
-/* ===========================
-   Card Components
-   =========================== */
+/* ===== CARDS ===== */
 
-/* Floating login card */
+/* Floating login card with rounded corners */
 .card {
   border-radius: 15px;
   background-color: var(--bg-card);
 }
 
+/* Card floating animation */
 .card {
   animation: cardFloat 5s ease-in-out infinite;
 }
 
+/* Wallet display card with gradient background */
 .wallet-card {
   max-width: 500px;       
   margin: 0 auto;    
@@ -22,6 +22,7 @@
   border: 2px solid var(--btn-auth-bg);
 }
 
+/* Wallet label text styling */
 .wallet-label {
   color: #faf1f9; 
   text-transform: uppercase;
@@ -29,6 +30,7 @@
   font-size: 1rem;
 }
 
+/* Individual currency item container */
 .currency-item {
   display: flex;
   align-items: center;
@@ -43,6 +45,7 @@
   border-left: 4px solid var(--btn-auth-bg);
 }
 
+/* Currency icon base styling */
 .currency-icon {
   width: 50px;
   height: 50px;
@@ -53,6 +56,7 @@
   font-size: 1.5rem;
 }
 
+/* Gold currency icon gradient */
 .gold-icon {
   background: linear-gradient(
     135deg,
@@ -63,6 +67,7 @@
   box-shadow: 0 4px 15px rgba(142, 91, 191, 0.4);
 }
 
+/* Diamond currency icon gradient */
 .diamond-icon {
   background: linear-gradient(
     135deg,
@@ -73,7 +78,7 @@
   box-shadow: 0 4px 15px rgb(145, 72, 156);
 }
 
-/* Price Tag Styles */
+/* Price tag display styling */
 .price-tag {
     display: flex;
     align-items: center;
@@ -85,11 +90,13 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Price tag icon styling */
 .price-tag i {
     font-size: 1.3rem;
     margin-right: 8px;
 }
 
+/* Floating animation keyframes */
 @keyframes cardFloat {
   0%, 100% {
     transform: translateY(0);
@@ -99,6 +106,7 @@
   }
 }
 
+/* Card image container */
 .card-img-wrapper {
     position: relative;
     overflow: hidden;
@@ -108,6 +116,7 @@
     background-position: center;
 }
 
+/* Card image with zoom on hover */
 .card-img-wrapper img {
     width: 100%;
     height: 100%;

@@ -40,8 +40,6 @@ function loadAllUserData(token) {
             displayEquippedItems(userData);
         }
         
-        // IMPORTANT: This must be called last on the challenges page
-        // because it triggers loadAllChallenges() internally
         if (typeof displayUserCompletions === 'function') {
             displayUserCompletions(userData, token);
         }

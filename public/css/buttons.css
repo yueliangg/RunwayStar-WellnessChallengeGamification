@@ -1,6 +1,4 @@
-/* ===========================
-   Button Components
-   =========================== */
+/* ===== BUTTONS ===== */
 
 /* Primary buttons (Register, Login, Submit) */
 .btn {
@@ -13,6 +11,7 @@
   border: none;
 }
 
+/* Primary button hover state */
 .btn:hover {
   background-color: var(--btn-auth-bg-hover);
   color: var(--btn-auth-color);
@@ -27,34 +26,39 @@
   transition: background-color 0.3s;
 }
 
+/* Register button hover state */
 .btn-register:hover {
   background-color: var(--btn-auth-bg-hover);
   color: var(--btn-auth-color);
 }
 
+/* Price/Purchase button with gradient */
 .price-button {
-  background: linear-gradient(135deg, #c99bd6, #7b5cf0); /* nice purple gradient */
-  color: #fff; /* white text */
+  background: linear-gradient(135deg, #c99bd6, #7b5cf0);
+  color: #fff;
   font-weight: 600;
   font-size: 16px;
   padding: 10px 20px;
   border: none;
-  border-radius: 12px; /* rounded corners */
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 6px 12px rgba(123, 92, 214, 0.25);
 }
 
+/* Price button hover with lift effect */
 .price-button:hover {
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 10px 20px rgba(123, 92, 214, 0.35);
 }
 
+/* Price button active/click state */
 .price-button:active {
   transform: translateY(0) scale(0.98);
   box-shadow: 0 4px 10px rgba(123, 92, 214, 0.2);
 }
 
+/* Disabled price button state */
 .price-button:disabled {
   background: #ccc;
   color: #888;

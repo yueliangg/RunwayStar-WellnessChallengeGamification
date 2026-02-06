@@ -429,7 +429,7 @@ function displayResultsModal(data) {
             size: 'lg',
             centered: true,
             closeButtonClass: 'btn-close',
-            hideFooter: false
+            hideFooter: true
         }
     );
 }
@@ -452,7 +452,7 @@ document.getElementById('createShowBtn')?.addEventListener('click', () => {
         openModal(
             '<i class="fas fa-plus-circle me-2"></i>Create Fashion Show',
             bodyContent,
-            handleCreateShow,  // ← Just the function reference
+            handleCreateShow, 
             {
                 size: 'lg',
                 centered: true,

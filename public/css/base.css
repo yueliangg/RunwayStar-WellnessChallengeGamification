@@ -1,49 +1,29 @@
+/* ===== BADGES ===== */
 
-/* Nav Pills (Tabs) */
-#showTabs {
-    background: #ffffff;        
-    border-radius: 50px;         
-    padding: 0.5rem;            
-}
-
-#showTabs .nav-link {
-    border-radius: 50px;         
-    color: #7c3aed;               
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-#showTabs .nav-link:hover {
-    background-color: rgb(190, 164, 230);
-    color: #6d28d9;                       
-}
-
-#showTabs .nav-link.active {
-    background: linear-gradient(135deg, #c9b6ea 0%, #bf8dee 100%);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-}
-
-/* Badges */
+/* Purple gradient badge */
 .badge.bg-purple-light {
     background: linear-gradient(135deg, #c9b2e0 0%, #c084fc 100%) !important;
 }
 
-/* Text Colors */
+/* ===== TEXT COLORS ===== */
+/* Dark purple text */
 .text-purple {
     color: #49346b !important;
 }
 
+/* Light purple text */
 .text-purple-light {
     color: #dfd0ec !important;
 }
 
-/* Spinner */
+/* ===== SPINNER ===== */
+/* Purple loading spinner */
 .spinner-border.text-purple {
     color: #7c3aed !important;
 }
 
-/* Headings */
+/* ===== HEADINGS ===== */
+/* Gradient text effect for warning headings */
 h1 .text-warning {
     background: linear-gradient(135deg, #e5b49d 0%, #b38473 100%);
     -webkit-background-clip: text;
@@ -51,6 +31,7 @@ h1 .text-warning {
     background-clip: text;
 }
 
+/* Store page title styling */
 .store-title {
   font-family: var(--font-heading);
   font-weight: 700;
@@ -59,17 +40,19 @@ h1 .text-warning {
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Section Header */
+/* ===== SECTION HEADERS ===== */
+/* Section header with left border accent */
 .section-header {
     border-left: 4px solid #7c3aed;
     padding-left: 1rem;
 }
 
-/* Fashion Show Header */
+/* Fashion show page header gradient */
 .fashion-show-header {
     background: linear-gradient(135deg, #d5c5f0 0%, #cfa2fa 100%);
 }
 
+/* Luxury styled header with gradient background */
 .luxury-header {
   background: linear-gradient(to right, rgba(164, 133, 181, 0.6),
       rgba(229, 201, 246, 0.387));
@@ -79,6 +62,7 @@ h1 .text-warning {
   overflow: hidden;
 }
 
+/* Decorative wave pattern overlay */
 .luxury-header::before {
   content: '';
   position: absolute;
@@ -90,6 +74,66 @@ h1 .text-warning {
   opacity: 0.3;
 }
 
+/* ===== ICONS ===== */
+/* Font Awesome icon color */
 .fas {
     color: #6d28d9;
+}
+
+/* Fix all divs to not override navbar or modals */
+div {
+  z-index: auto !important;
+}
+
+/* Navbar layer (below modals, above content) */
+nav.navbar {
+  z-index: 1030 !important;
+}
+
+.dropdown-menu {
+  z-index: 1031 !important;
+}
+
+/* Modal layer (highest priority - above everything) */
+.modal, 
+#modal,
+#modalContainer {
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+.modal-backdrop {
+  z-index: 9998 !important;
+  position: fixed !important;
+}
+
+/* Content containers (lowest priority) */
+.container,
+.container-fluid,
+.row,
+.col,
+.col-md-4,
+.col-md-6,
+.col-lg-4,
+.store-container,
+.profile-container,
+.inventory-container,
+.challenges-container {
+  position: relative;
+  z-index: auto !important;
+  transform: none !important; /* transform creates new stacking context */
+}
+
+
+/* Add this to make absolutely sure cards stay below */
+.card,
+.item-card,
+.challenge-card,
+.btn-luxury,
+.btn-equip {
+  z-index: 1 !important;
+  position: relative;
+  /* Remove any transform properties */
+  transform: none !important;
+  will-change: auto !important;
 }

@@ -1,3 +1,34 @@
+/* ===== NAVIGATION TABS ===== */
+
+/* Fashion show tabs container */
+#showTabs {
+    background: #ffffff;        
+    border-radius: 50px;         
+    padding: 0.5rem;            
+}
+
+/* Default tab link styling */
+#showTabs .nav-link {
+    border-radius: 50px;         
+    color: #7c3aed;               
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Tab link hover state */
+#showTabs .nav-link:hover {
+    background-color: rgb(190, 164, 230);
+    color: #6d28d9;                       
+}
+
+/* Active tab styling */
+#showTabs .nav-link.active {
+    background: linear-gradient(135deg, #c9b6ea 0%, #bf8dee 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+/* Store tabs container */
 .store-tabs {
   background: #fff;
   border-radius: 50px;
@@ -7,6 +38,7 @@
   border: 2px solid var(--border-input);
 }
 
+/* Store tab button base styling */
 .store-tab {
   padding: 15px 40px;
   border-radius: 50px;
@@ -18,10 +50,12 @@
   cursor: pointer;
 }
 
+/* Store tab hover effect */
 .store-tab:hover {
   color: var(--btn-auth-bg);
 }
 
+/* Active store tab with gradient */
 .store-tab.active {
   background: linear-gradient(135deg, var(--btn-auth-bg) 0%, var(--text-link) 100%);
   color: #ffffff;

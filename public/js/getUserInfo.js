@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
 function displayUserProfile(responseData) {
     if (!responseData) return;
 
-    // Extract user data from the combined response
     const user = responseData.user && responseData.user[0] ? responseData.user[0] : null;
     
     if (!user) {

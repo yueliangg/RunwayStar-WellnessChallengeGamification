@@ -1,12 +1,11 @@
-/* ===========================
-   Overall Page Styles
-   =========================== */
+/* ===== OVERALL PAGE STYLES ===== */
 
-/* Page Background – applied to ALL pages */
+/* Page background applied to ALL pages */
 body {
   min-height: 100vh;
+  position: relative;
 
-  /* Gradient + image */
+  /* Gradient overlay with background image */
   background-image:
     linear-gradient(
       to bottom,
@@ -20,28 +19,35 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
 
-  /* Typography */
+  /* Default typography */
   font-family: var(--font-body);
 }
 
-
-h1, h2, h3, .brand, .logo-text {
-  font-family: var(--font-heading);
-  letter-spacing: 0.5px;
-}
-
-
-/* Auth page background */
-.auth-page {
-  min-height: 100vh;
-  background-image: 
-    linear-gradient(
-      var(--bg-auth-gradient-start),
-      var(--bg-auth-gradient-end)
-    ),
-    url("https://raw.githubusercontent.com/yueliangg/images/main/bg_img1.png");
+/* Add GIF overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--bg-auth-gif);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  mix-blend-mode: multiply;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure all content stays above the GIF overlay */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+/* Heading font family and letter spacing */
+h1, h2, h3, .brand, .logo-text {
+  font-family: var(--font-heading);
+  letter-spacing: 0.5px;
 }
