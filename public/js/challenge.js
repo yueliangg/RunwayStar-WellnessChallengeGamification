@@ -1,5 +1,4 @@
 // Globals 
-let currentUserId = null;
 let availableChallengesArray = [];
 let acceptedChallengeIds = new Set();
 
@@ -8,16 +7,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const token = getToken();
     if (!token) return;
 
-    loadUserProfile(token);
-    loadAcceptedChallenges(token);
-    loadAllChallenges(token);
     eventListeners(token);
+    
+    loadAllUserData(token);
 });
 
 // Event Listeners 
 function eventListeners(token) {
     const challengeForm = document.getElementById("challengeForm");
-    challengeForm.addEventListener("submit", (event) => createChallenges(event, token));
+    if (challengeForm) {
+        challengeForm.addEventListener("submit", (event) => createChallenges(event, token));
+    }
 }
 
 // Create Challenge 
@@ -139,32 +139,34 @@ function createAcceptedChallengeCard(challenge, token) {
     return card;
 }
 
-// Load and Render Accepted Challenges 
-function loadAcceptedChallenges(token) {
-    const callback = (responseStatus, responseData) => {
-        const acceptedChallenges = responseData;
-        if (responseStatus !== 200 || !acceptedChallenges) {
-            console.error("Failed to load accepted challenges:", acceptedChallenges);
-            return;
-        }
+// Display User Completions (NO FETCH - uses data from /api/users/me)
+function displayUserCompletions(responseData, token) {
+    if (!responseData || !responseData.userCompletions) {
+        console.error("No user completions data provided");
+        return;
+    }
 
-        // Store accepted challenge IDs in global variable
-        acceptedChallengeIds = new Set(acceptedChallenges.map(c => c.challenge_id));
+    const acceptedChallenges = responseData.userCompletions || [];
 
-        // Render accepted challenges
-        const acceptedList = document.getElementById("acceptedChallenges");
-        acceptedList.innerHTML = "";
+    // Store accepted challenge IDs in global variable
+    acceptedChallengeIds = new Set(acceptedChallenges.map(c => c.challenge_id));
 
-        acceptedChallenges.forEach(challenge => {
-            const card = createAcceptedChallengeCard(challenge, token);
-            acceptedList.appendChild(card);
-        });
-    };
+    // Render accepted challenges
+    const acceptedList = document.getElementById("acceptedChallenges");
+    if (!acceptedList) return;
+    
+    acceptedList.innerHTML = "";
 
-    fetchMethod(currentUrl + "/api/challenges/user", callback, "GET", null, token);
+    acceptedChallenges.forEach(challenge => {
+        const card = createAcceptedChallengeCard(challenge, token);
+        acceptedList.appendChild(card);
+    });
+
+    // IMPORTANT: Load all challenges AFTER we have the accepted IDs
+    loadAllChallenges(token);
 }
 
-// Load and Render Available Challenges 
+// Load and Render Available Challenges (Still needs separate fetch - not user-specific)
 function loadAllChallenges(token) {
     const callback = (responseStatus, responseData) => {
         const challenges = responseData;
@@ -178,6 +180,8 @@ function loadAllChallenges(token) {
         availableChallengesArray = challenges.filter(c => !acceptedChallengeIds.has(c.id));
         
         const availableList = document.getElementById("availableChallenges");
+        if (!availableList) return;
+        
         availableList.innerHTML = "";
 
         availableChallengesArray.forEach(challenge => {

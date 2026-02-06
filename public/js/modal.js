@@ -85,7 +85,10 @@ function openModal(title, bodyContent, callback, options = {}) {
             const newSubmitEl = modalEl.querySelector("#modalSubmit");
 
             newSubmitEl.addEventListener("click", () => {
-                if (modalCallback) modalCallback();
+                if (modalCallback) {
+                    const token = localStorage.getItem('token');  // ← ADD THIS LINE
+                    modalCallback(token);  // ← CHANGE THIS LINE to pass token
+                }
                 const instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
                 instance.hide();
             });

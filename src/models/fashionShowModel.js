@@ -40,19 +40,6 @@ module.exports.insertFashionShow = (data, callback) =>
     pool.query(SQLSTATMENT, VALUES, callback);
 }
 
-//update fashion show
-module.exports.updateFashionShow = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    UPDATE FashionShow
-    SET date = ?, description = ?
-    WHERE id = ?
-    `;
-    const VALUES = [data.date, data.description, data.show_id];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
-}
-
 //select fashion show by user
 module.exports.selectFashionShowByUser = (data, callback) => {
     const SQLSTATEMENT = `
@@ -121,17 +108,5 @@ module.exports.selectOngoingFashionShow = (callback) => {
     `;
 
     pool.query(SQLSTATEMENT, callback);
-};
-
-// delete fashion show
-module.exports.deleteFashionShow = (callback) => {
-    const SQLSTATEMENT = `
-        DELETE *
-        FROM FashionShow
-        WHERE id = ?
-    `;
-    const VALUES = [data.fashion_show_id]
-
-    pool.query(SQLSTATEMENT, VALUES, callback);
 };
 

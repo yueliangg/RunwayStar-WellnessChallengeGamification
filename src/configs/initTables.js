@@ -3,6 +3,10 @@ const pool = require("../services/db");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+require('dotenv').config();
+
+const pepper = process.env.BCRYPT_PEPPER;
+
 const callback = (error, results, fields) => {
   if (error) {
     console.error("Error creating tables:", error);
@@ -12,7 +16,7 @@ const callback = (error, results, fields) => {
   process.exit();
 }
 
-bcrypt.hash('1234', saltRounds, (error, hash) => {
+bcrypt.hash('1234' + pepper, saltRounds, (error, hash) => {
   if (error) {
     console.error("Error hashing password:", error);
   } else {
@@ -72,7 +76,6 @@ bcrypt.hash('1234', saltRounds, (error, hash) => {
             cost_diamonds INT DEFAULT 0,
             attraction_value INT DEFAULT 0
         );
-
 
         CREATE TABLE Inventory (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -135,7 +138,7 @@ bcrypt.hash('1234', saltRounds, (error, hash) => {
         ('Moonlight Satin Pumps', 'exclusive', 0, 90, 22),
         ('Starlight Diamond Choker', 'normal', 100, 0, 12),
         ('Aurora Silk Gloves', 'exclusive', 0, 60, 14),
-        ('Velvet Runway Clutch', 'normal', 70, 0, 9);
+        ('Aurora Silk Gown', 'normal', 160, 0, 9);
 
         INSERT INTO Inventory (user_id, item_id, is_equipped) VALUES
         (1, 1, TRUE),
@@ -148,7 +151,7 @@ bcrypt.hash('1234', saltRounds, (error, hash) => {
 
         INSERT INTO FashionShow (date, description, participants, status) VALUES
         ('2025-12-25', 'Winter Glam Runway Show', 5, 'completed'),
-        ('2026-12-06', 'Spring Summer Runway Show', 0, 'ongoing');
+        ('2026-12-06', 'Spring Summer Runway Show', 4, 'ongoing');
 
 
         INSERT INTO FashionShowEntry (show_id, user_id, attraction_score) VALUES
@@ -156,7 +159,11 @@ bcrypt.hash('1234', saltRounds, (error, hash) => {
         (1, 2, 0),
         (1, 3, 0),
         (1, 4, 0),
-        (1, 5, 0);
+        (1, 5, 0),
+        (2, 5, 0),
+        (2, 2, 0),
+        (2, 3, 0),
+        (2, 4, 0);
       `;
 
     pool.query(SQLSTATEMENT, callback);

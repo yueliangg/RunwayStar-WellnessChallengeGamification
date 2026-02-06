@@ -25,7 +25,6 @@ module.exports.checkFashionShowName = (req, res, next) => {
     model.selectFashionShowByName(data, callback);
 };
 
-
 //create fashion show
 module.exports.createFashionShow = (req, res, next) => {
 
@@ -55,16 +54,17 @@ module.exports.createFashionShow = (req, res, next) => {
 // get fashion show by id
 module.exports.getFashionShow = (req, res, next) => {
     const data = {
-        show_id: req.params.fashion_show_id || res.locals.fashion_show_id ||req.body.fashion_show_id 
+        show_id: req.params.fashion_show_id || req.body.fashion_show_id || res.locals.fashion_show_id 
     };
 
     const callback = (error, results) => {
-        if (error) return res.status(500).json(error);
+        if (error) {
+            return res.status(500).json(error);
+        }
 
         if (results.length === 0) {
             return res.status(404).json({ message: "Fashion show not found" });
         }
-
         res.locals.fashionShow = results[0];
 
         if (!res.locals.data) {
@@ -74,26 +74,6 @@ module.exports.getFashionShow = (req, res, next) => {
     }
 
     model.selectFashionShow(data, callback)
-};
-
-// get fashion show by id
-module.exports.updateFashionShow = (req, res, next) => {
-    const data = {
-        date: req.body.date,
-        description: req.body.description,
-        show_id: req.params.fashion_show_id
-    };
-
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error updateFashionShow:", error);
-            return res.status(500).json(error);
-        }
-
-        next();
-    };
-
-    model.updateFashionShow(data, callback);
 };
 
 // get fashion show by id
@@ -112,6 +92,7 @@ module.exports.getAllFashionShow = (req, res, next) => {
     model.selectAllFashionShow(callback);
 };
 
+//get fashion show by User
 module.exports.getFashionShowUser = (req, res, next) => {
     const data = {
         user_id : res.locals.userId
@@ -122,8 +103,8 @@ module.exports.getFashionShowUser = (req, res, next) => {
             console.log("Error getFashionShowByUser:", error);
             return res.status(500).json(error);
         }
-        res.locals.data = results;  
-        console.log(results)
+        res.locals.data = res.locals.data || {};
+        res.locals.data.userFashionShow = results;
 
         next();
     };
@@ -242,7 +223,7 @@ module.exports.checkOngoing = (req, res, next) => {
 };
 
 // Update Fashion Show Status
-module.exports.updateStatus = (req, res) => {
+module.exports.updateStatus = (req, res, next) => { 
     const data = {
         show_id: req.body.fashion_show_id
     };
@@ -253,28 +234,21 @@ module.exports.updateStatus = (req, res) => {
             return res.status(500).json(error);
         }
 
-        if (results.affectedRows === 0) {
-            return res.status(404).json({
-                message: "Fashion show not found"
-            });
-        }
-        next();
+        next(); 
     };
-    
-
     model.updateStatus(data, callback);
 };
 
 // Get Completed Fashion Shows
 module.exports.getCompletedFashionShow = (req, res, next) => {
-
     const callback = (error, results) => {
         if (error) {
             console.log("Error getCompletedFashionShow:", error);
-            return res.status(500).json(error);
+            return next(error); // Pass error to error handling middleware
         }
 
-        res.locals.data = results;
+        res.locals.data = res.locals.data || {};
+        res.locals.data.completed = results;
         next();
     };
 
@@ -283,33 +257,17 @@ module.exports.getCompletedFashionShow = (req, res, next) => {
 
 // Get Ongoing Fashion Shows
 module.exports.getOngoingFashionShow = (req, res, next) => {
-
     const callback = (error, results) => {
         if (error) {
             console.log("Error getOngoingFashionShow:", error);
-            return res.status(500).json(error);
+            return next(error); // Pass error to error handling middleware
         }
-
-        res.locals.data = results;
+        
+        res.locals.data = res.locals.data || {};
+        res.locals.data.ongoing = results;
         next();
     };
 
     model.selectOngoingFashionShow(callback);
-};
-
-// Get Ongoing Fashion Shows
-module.exports.deleteFashionShow = (req, res, next) => {
-
-    const data = {fashion_show_id: req.params.fashion_show_id}
-
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error deleteFashionShow:", error);
-            return res.status(500).json(error);
-        }
-        next();
-    };
-
-    model.deleteFashionShow(data, callback);
 };
 

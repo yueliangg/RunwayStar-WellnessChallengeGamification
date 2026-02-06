@@ -70,7 +70,8 @@ module.exports.getUser = (req, res, next) => {
             return res.status(500).json(error);
         }
 
-        res.locals.data = results[0]
+        res.locals.data = res.locals.data || {};
+        res.locals.data.user = results;
         next();
     };
 
@@ -116,23 +117,74 @@ module.exports.updateUser = (req, res, next) => {
 };
 
 // Update diamonds for top 3 runway stars
+// Update diamonds for top 3 runway stars
 module.exports.updateDiamondsForWinners = (req, res, next) => {
-    const top3 = res.locals.top3; 
+    console.log('\n=== START updateDiamondsForWinners ===');
+    
+    const top3 = res.locals.top3;
+    console.log('top3 received:', JSON.stringify(top3, null, 2));
 
-    // Map top 3 into array of arrays: [diamonds, user_id]
-    const data = {
-        values: utils.diamondCal                       
-    };
+    const values = utils.diamondCal(top3);
+    console.log('values from diamondCal:', JSON.stringify(values, null, 2));
+    
+    // Handle empty case
+    if (values.length === 0) {
+        console.log('No values to process, moving to next middleware');
+        return next();
+    }
 
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error updateDiamondsForWinners:", error);
-            return res.status(500).json(error);
-        }
-        next();
-    };
+    let completed = 0;
+    let hasError = false;
+    const total = values.length;
+    console.log(`Total updates to perform: ${total}`);
 
-    model.updateDiamondsForWinner(data, callback);
+    // Call model once for each winner
+    values.forEach(([diamonds, user_id], index) => {
+        console.log(`\n--- Processing update ${index + 1}/${total} ---`);
+        console.log('user_id:', user_id, '| Type:', typeof user_id);
+        console.log('diamonds:', diamonds, '| Type:', typeof diamonds);
+        
+        const data = {
+            diamonds: diamonds,
+            user_id: user_id
+        };
+        console.log('Data being sent to model:', JSON.stringify(data, null, 2));
+
+        const callback = (error, results) => {
+            if (hasError) {
+                console.log('Skipping callback - error already occurred');
+                return;
+            }
+            
+            if (error) {
+                hasError = true;
+                console.log('❌ ERROR in updateDiamondsForWinners:');
+                console.log('Error details:', error);
+                console.log('Failed for user_id:', user_id);
+                return res.status(500).json(error);
+            }
+            
+            completed++;
+            console.log(`✓ Update ${completed}/${total} completed successfully`);
+            console.log('Results:', JSON.stringify(results, null, 2));
+            console.log('Rows affected:', results?.affectedRows || 'N/A');
+            
+            // Check if any rows were actually updated
+            if (results?.affectedRows === 0) {
+                console.log('⚠️ WARNING: No rows were updated for user_id:', user_id);
+                console.log('This likely means the user_id does not exist in the database');
+            }
+            
+            // Only proceed after ALL updates complete
+            if (completed === total) {
+                console.log('\n✓ All diamond updates completed successfully');
+                console.log('=== END updateDiamondsForWinners ===\n');
+                next();
+            }
+        };
+
+        model.updateDiamondsForWinner(data, callback);
+    });
 };
 
 // Check Username or Email Exist
@@ -240,7 +292,7 @@ module.exports.login = (req, res, next) => {
 module.exports.updateAttractionScore = (req, res, next) => {
     const data = {
         user_id: res.locals.userId || req.params.user_id || req.body.user_id,
-        attraction_score: res.locals.total_score
+        attraction_score: res.locals.data.total_score
     };
 
     const callback = (error, results) => {
@@ -254,6 +306,7 @@ module.exports.updateAttractionScore = (req, res, next) => {
     model.updateAttractionScore(data, callback);
 };
 
+// Update avatar
 module.exports.updateAvatar = (req, res) => {
     const data = {
         user_id: res.locals.userId,           
@@ -271,6 +324,7 @@ module.exports.updateAvatar = (req, res) => {
     model.updateAvatar(data, callback);
 };
 
+//deduct points
 module.exports.deductPoints = (req, res, next) => {
     const data = {
         user_id: res.locals.userId,
@@ -292,6 +346,7 @@ module.exports.deductPoints = (req, res, next) => {
     model.getChallengePoints(data, callback);
 };
 
+//update points
 module.exports.updatePoints = (req, res, next) => {
     const data = {
         user_id: res.locals.userId,

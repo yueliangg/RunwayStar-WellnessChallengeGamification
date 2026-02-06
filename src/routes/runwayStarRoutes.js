@@ -36,7 +36,6 @@ router.get('/:fashion_show_id',
 
 // Route: GET /runway-star/:fashion_show_id/user-rank
 // Description: Retrieve the rank by user and fashion_show_id
-// Route: GET /runway-star/:fashion_show_id/:user_id
 router.get('/:fashion_show_id/user-rank',
     jwtMiddleware.verifyToken,
     userController.checkUserId,      
@@ -44,15 +43,6 @@ router.get('/:fashion_show_id/user-rank',
     fashionShowController.checkOngoing,
     runwayStarController.getUserRank,       
     withMessage("Top 3 ranked runway stars fetched successfully", 200),
-    sendResponse
-);
-
-
-// Route: GET /runway-star
-// Description: Retrieve finalized top 3 runway stars for all fashion shows
-router.get('/',
-    runwayStarController.getAllFinals,         
-    withMessage("Top 3 ranked runway stars for all fashion shows fetched successfully", 200),
     sendResponse
 );
 

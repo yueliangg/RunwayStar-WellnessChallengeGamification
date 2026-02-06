@@ -1,11 +1,20 @@
 const pool = require("../services/db");
 
-//select runwaystars by show
+//select runwaystars by show WITH fashion show details
 module.exports.selectRunwayStarsByShow = (data, callback) => {
     const SQLSTATEMENT = `
-        SELECT u.username, u.star_name, rs.*
+        SELECT 
+            u.username, 
+            u.star_name, 
+            rs.*,
+            fs.id as id,
+            fs.date,
+            fs.description,
+            fs.status,
+            fs.participants
         FROM RunwayStar rs
         INNER JOIN User u ON rs.user_id = u.id
+        INNER JOIN FashionShow fs ON rs.show_id = fs.id
         WHERE rs.show_id = ?
         ORDER BY rs.final_rank ASC
     `;
@@ -25,17 +34,6 @@ module.exports.insertTop3RunwayStars = (data, callback) => {
     const VALUES = [data.values];
 
     pool.query(SQLSTATEMENT, VALUES, callback);
-};
-
-//select all runway stars
-module.exports.selectAllFinalRunwayStars = (callback) => {
-    const SQLSTATEMENT = `
-        SELECT *
-        FROM RunwayStar
-        ORDER BY show_id ASC, final_rank ASC
-    `;
-
-    pool.query(SQLSTATEMENT, callback);
 };
 
 //delete entry

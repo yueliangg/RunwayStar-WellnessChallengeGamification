@@ -1,51 +1,51 @@
 // Store fashion shows globally
 let fashionShowsArray = [];
 
-// Load fashion shows and attach modal logic
-function loadUserFashionShows(token) {
-    const callback = (responseStatus, responseData) => {
-        const fashionShows = responseData;
-        if (responseStatus !== 200) {
-            console.error("Failed to load fashion shows:", fashionShows);
-            return;
-        }
+// Display fashion shows (NO FETCH - just displays data)
+function displayUserFashionShows(responseData, token) {
+    if (!responseData) {
+        console.error("No data provided");
+        return;
+    }
 
-        // Store shows globally
-        fashionShowsArray = fashionShows;
+    // Extract fashion shows from the combined response
+    const fashionShows = responseData.userFashionShow || [];
+    
+    // Store shows globally
+    fashionShowsArray = fashionShows;
 
-        const showDiv = document.getElementById("userFashionShows");
-        showDiv.innerHTML = "";
+    const showDiv = document.getElementById("userFashionShows");
+    if (!showDiv) return;
+    
+    showDiv.innerHTML = "";
 
-        if (fashionShows.length === 0) {
-            showDiv.innerHTML = '<p class="text-muted">No fashion shows yet.</p>';
-            return;
-        }
+    if (fashionShows.length === 0) {
+        showDiv.innerHTML = '<p class="text-muted">No fashion shows yet.</p>';
+        return;
+    }
 
-        fashionShows.forEach(show => {
-            const card = document.createElement("div");
-            card.className = "col-12 col-md-6 mb-3";
-            card.innerHTML = `
-                <div class="card p-3 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="card-title mb-1">${show.description || 'Fashion Show'}</h5>
-                        <p class="mb-0">Date: ${new Date(show.date).toLocaleDateString()}</p>
-                        <p class="mb-0">Participants: ${show.participants}</p>
-                    </div>
-                    <button class="btn btn-sm show-btn" data-show-id="${show.show_id}">Show</button>
+    fashionShows.forEach(show => {
+        const card = document.createElement("div");
+        card.className = "col-12 col-md-6 mb-3";
+        card.innerHTML = `
+            <div class="card p-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title mb-1">${show.description || 'Fashion Show'}</h5>
+                    <p class="mb-0">Date: ${new Date(show.date).toLocaleDateString()}</p>
+                    <p class="mb-0">Participants: ${show.participants}</p>
                 </div>
-            `;
+                <button class="btn btn-sm show-btn" data-show-id="${show.show_id}">Show</button>
+            </div>
+        `;
 
-            // Attach click event to the button
-            const button = card.querySelector(".show-btn");
-            button.addEventListener("click", function() {
-                openFashionShowModal(this.dataset.showId, token);
-            });
-
-            showDiv.appendChild(card);
+        // Attach click event to the button
+        const button = card.querySelector(".show-btn");
+        button.addEventListener("click", function() {
+            openFashionShowModal(this.dataset.showId, token);
         });
-    };
 
-    fetchMethod(currentUrl + "/api/users/fashion-show", callback, "GET", null, token);
+        showDiv.appendChild(card);
+    });
 }
 
 // Open Modal Function
@@ -65,7 +65,7 @@ function openFashionShowModal(showId, token) {
         return;
     }
 
-    // Modal body content with same styling as results modal
+    // Modal body content
     const bodyContent = `
         <div class="ranking-item p-3 mb-3 border rounded">
             <div class="mb-3">
@@ -85,21 +85,27 @@ function openFashionShowModal(showId, token) {
         </div>
     `;
 
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById("modal"));
-    
-    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-award me-2"></i>Fashion Show Details';
-    document.getElementById('modalBody').innerHTML = bodyContent;
-    
-    // Change submit button to delete button
+    // Callback for delete button
+    const deleteCallback = (token) => {
+        const modalEl = document.getElementById("modal");
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        deleteFashionShowEntry(showId, token, modal);
+    };
+
+    // Use openModal to handle everything (it resets styling automatically)
+    openModal(
+        '<i class="fas fa-award me-2"></i>Fashion Show Details',
+        bodyContent,
+        deleteCallback,
+        {
+            centered: false
+        }
+    );
+
+    // Change submit button text to "Delete My Entry" and make it red
     const submitBtn = document.getElementById('modalSubmit');
     submitBtn.textContent = 'Delete My Entry';
     submitBtn.className = 'btn btn-danger';
-    
-    // Delete button handler - pass modal instance
-    submitBtn.onclick = () => deleteFashionShowEntry(showId, token, modal);
-    
-    modal.show();
 
     // Fetch user rank after modal is shown
     setTimeout(() => {
@@ -157,7 +163,6 @@ function openFashionShowModal(showId, token) {
             }
         };
 
-        // Fixed: Use showId parameter instead of undefined fashion_show_id variable
         fetchMethod(currentUrl + `/api/runway-star/${showId}/user-rank`, callback, "GET", null, token);
     }, 100);
 }
@@ -167,20 +172,38 @@ function deleteFashionShowEntry(showId, token, modal) {
     if (!confirm("Are you sure you want to delete your entry?")) return;
 
     const deleteCallback = (status, data) => {
+        modal.hide();
+
         if (status === 200 || status === 204) {
-            alert("Your entry was deleted successfully!");
-            modal.hide();
-            loadUserFashionShows(token); // Refresh list
+            // Convert showId to number for comparison
+            const showIdNum = parseInt(showId);
+            
+            // Update userData globally without reloading
+            if (userData && userData.userFashionShow) {
+                userData.userFashionShow = userData.userFashionShow.filter(
+                    entry => entry.show_id !== showIdNum
+                );
+            }
+
+            // Also update the global fashionShowsArray
+            fashionShowsArray = fashionShowsArray.filter(
+                entry => entry.show_id !== showIdNum
+            );
+
+            // Show success modal
+            showSuccessModal("Entry Deleted!", "Your entry was deleted successfully!");
+
+            // Re-display the updated data without reloading
+            if (typeof displayUserFashionShows === 'function') {
+                displayUserFashionShows(userData, token);
+            }
         } else if (status === 409) {
-            alert("Cannot delete entry - This fashion show has already been finalized.");
-            modal.hide();
+            showErrorModal("Cannot Delete Entry", "This fashion show has already been finalized.");
         } else if (status === 404) {
-            alert("Entry not found in this fashion show.");
-            modal.hide();
+            showErrorModal("Entry Not Found", "Your entry was not found in this fashion show.");
         } else {
             console.error("Delete failed:", data);
-            alert(data.message || "Failed to delete entry. Please try again.");
-            modal.hide();
+            showErrorModal("Delete Failed", data.message || "Failed to delete entry. Please try again.");
         }
     };
 

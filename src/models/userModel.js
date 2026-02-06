@@ -62,33 +62,20 @@ module.exports.selectAllUser = (callback) => {
     pool.query(SQLSTATEMENT, callback);
 }
 
-//Update user
+// Update user starname 
 module.exports.updateUser = (data, callback) => {
     const SQLSTATEMENT = `
-    UPDATE User
-    SET star_name = ?
-    WHERE id = ?`;
+        UPDATE User
+        SET star_name = ?
+        WHERE id = ?
+    `;
 
     const VALUES = [data.star_name, data.user_id];
 
     pool.query(SQLSTATEMENT, VALUES, callback);
-}
-
-//Update user's diamonds 
-module.exports.updateDiamondsForWinner = (data, callback) => {
-    const SQLSTATEMENT = `
-        UPDATE User
-        SET diamonds = diamonds + ?
-        WHERE id = ?
-    `;
-
-    // Simply run one query per row using data from controller
-    data.values.forEach(([diamonds, user_id]) => {
-        pool.query(SQLSTATEMENT, [diamonds, user_id], callback);
-    });
 };
 
-//Update user's diamonds 
+// Update user's diamonds 
 module.exports.updateDiamondsForWinner = (data, callback) => {
     const SQLSTATEMENT = `
         UPDATE User
@@ -96,10 +83,9 @@ module.exports.updateDiamondsForWinner = (data, callback) => {
         WHERE id = ?
     `;
 
-    // Simply run one query per row using data from controller
-    data.values.forEach(([diamonds, user_id]) => {
-        pool.query(SQLSTATEMENT, [diamonds, user_id], callback);
-    });
+    const VALUES = [data.diamonds, data.user_id];
+
+    pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
 // Update user's attraction score

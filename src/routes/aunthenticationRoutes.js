@@ -5,9 +5,7 @@ const jwtMiddleware = require('../middleware/jwtMiddleware');
 const bcryptMiddleware = require('../middleware/bcryptMiddleware');
 
 // POST /authetication/login
-// Description: Authenticate a user by checking login credentials, 
-// comparing password with stored hash, generating a JWT token, 
-// and sending the token back to the client.
+// Description: Authenticate a user by checking login credentials.
 router.post("/login", 
     userController.login,             
     bcryptMiddleware.comparePassword,  
@@ -16,9 +14,7 @@ router.post("/login",
 );
 
 // POST /authentication/register
-// Description: Register a new user by checking username/email availability, 
-// hashing the password, creating the user record, generating a JWT token, 
-// and sending the token back to the client.
+// Description: Register a new user by checking username/email availability.
 router.post("/register", 
     userController.checkUsernameOrEmailExist, 
     bcryptMiddleware.hashPassword,          

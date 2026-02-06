@@ -57,14 +57,3 @@ module.exports.deleteEntry = (data, callback) => {
 
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
-
-// Delete fashion show entry By Show_id
-module.exports.deleteEntryByShow = (data, callback) => {
-    const SQLSTATEMENT = `
-        DELETE FROM FashionShowEntry
-        WHERE show_id = ?
-    `;
-    const VALUES = [data.fashion_show_id];
-
-    pool.query(SQLSTATEMENT, VALUES, callback);
-};

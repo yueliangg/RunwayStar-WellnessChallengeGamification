@@ -131,24 +131,3 @@ module.exports.deleteEntry = (req, res, next) => {
 
     model.deleteEntry(data, callback);
 };
-
-// Delete fashion show entry
-module.exports.deleteEntryByShow = (req, res, next) => {
-    const data = {
-        fashion_show_id: req.params.fashion_show_id
-    };
-
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error deleting fashion show entry:", error);
-            return res.status(500).json(error);
-        }
-
-        if (results.affectedRows === 0) {
-            return res.status(404).json({ message: "Entry not found." });
-        }
-        next();
-    };
-
-    model.deleteEntryByShow(data, callback);
-};

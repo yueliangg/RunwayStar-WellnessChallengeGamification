@@ -4,9 +4,10 @@ const bcrypt = require("bcrypt");
 // Set Salt Rounds (Encryption Layers)
 const saltRounds = 10;
 
+// Import parameter from Env
+const pepper = process.env.BCRYPT_PEPPER;
+
 // Compare Password
-// Used during Login to verify Password
-// 1 Raw Password (from req.body) + 1 Hashed Password (from DB) should be used. 
 module.exports.comparePassword = (req, res, next) => {
   const callback = (err, isMatch) => {
     if (err) {
@@ -22,12 +23,10 @@ module.exports.comparePassword = (req, res, next) => {
       }
     }
   };
-  bcrypt.compare(req.body.password, res.locals.hash, callback);
+  bcrypt.compare(req.body.password + pepper, res.locals.hash, callback);
 };
 
 // Hash (Encrypt) Password
-// Used during Register to encrypt Password
-// Make sure this encrypted password is stored in DB instead of raw.
 module.exports.hashPassword = (req, res, next) => {
   const callback = (err, hash) => {
     if (err) {
@@ -39,5 +38,5 @@ module.exports.hashPassword = (req, res, next) => {
     }
   };
 
-  bcrypt.hash(req.body.password, saltRounds, callback);
+  bcrypt.hash(req.body.password + pepper, saltRounds, callback);
 };

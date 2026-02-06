@@ -104,6 +104,7 @@ module.exports.getAllChallenges = (req, res, next) => {
     model.selectAllChallenge(callback);
 };
 
+//update challenge
 module.exports.updateChallenge = (req, res, next) => {
     if (req.body.user_id == undefined ||
         req.body.description == undefined ||
@@ -297,25 +298,6 @@ module.exports.getRecord = (req, res, next) => {
 };
 
 // Retrieve all completions for a specific challenge
-module.exports.getAllCompletions = (req, res, next) => {
-    const data = {
-        challenge_id: req.params.challenge_id
-    };
-
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error getAllCompletions:", error);
-            return res.status(500).json(error);
-        }
-
-        res.locals.data = results; 
-        next();
-    };
-
-    model.selectAllCompletions(data, callback);
-};
-
-// Retrieve all completions for a specific challenge
 module.exports.getAllCompletionsByUser = (req, res, next) => {
     const data = {
         user_id: res.locals.userId
@@ -327,7 +309,8 @@ module.exports.getAllCompletionsByUser = (req, res, next) => {
             return res.status(500).json(error);
         }
 
-        res.locals.data = results; 
+        res.locals.data = res.locals.data || {};
+        res.locals.data.userCompletions = results;
         next();
     };
 

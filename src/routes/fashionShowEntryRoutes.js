@@ -5,7 +5,6 @@ const fashionShowEntryController = require('../controllers/fashionShowEntryContr
 const fashionShowController = require('../controllers/fashionShowController');
 const userController = require('../controllers/userController');
 const inventoryController = require('../controllers/inventoryController');
-const runwayStarController = require('../controllers/runwayStarController');
 const jwtMiddleware = require('../middleware/jwtMiddleware');
 
 const { withMessage, sendResponse } = require('../middleware/response');

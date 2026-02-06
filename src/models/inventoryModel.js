@@ -19,7 +19,8 @@ module.exports.selectUserInventory = (data, callback) => {
             i.is_equipped, 
             it.name, 
             it.type, 
-            it.attraction_value
+            it.attraction_value,
+            it.id
         FROM Inventory i
         INNER JOIN Items it ON i.item_id = it.id
         WHERE i.user_id = ?
@@ -71,11 +72,18 @@ module.exports.updateEquipStatus = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
-
 // Get equipped items helper
-module.exports.getEquippedItemsWithScore = (data, callback) => {
+module.exports.getEquippedItems = (data, callback) => {
     const SQLSTATEMENT = `
-        SELECT i.name, i.type, i.attraction_value
+        SELECT 
+            i.id,
+            i.name,
+            i.type,
+            i.attraction_value,
+            i.cost_points,
+            i.cost_diamonds,
+            inv.id as inventory_id,
+            inv.is_equipped
         FROM Inventory inv
         JOIN Items i ON inv.item_id = i.id
         WHERE inv.user_id = ? AND inv.is_equipped = 1

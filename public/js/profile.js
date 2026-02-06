@@ -1,7 +1,6 @@
 let inventoryArray = [];
 let equippedArray = [];
 let fashionShowEntriesArray = [];
-let currentUserId = null;
 let fashionShowCounts = {}; 
 
 // DOMContentLoaded
@@ -10,11 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!token) return; 
 
     attachEventListeners();
-    loadUserProfile(token);
     attachStarNameEditListener(token);
-    loadEquippedItems(token);
-    loadInventory(token);
-    loadUserFashionShows(token);
+    
+    // Single call to load all data
+    loadAllUserData(token);
 });
 
 // Attach Event Listeners
@@ -33,41 +31,65 @@ function handleLogout() {
 function attachStarNameEditListener(token) {
   const editIcon = document.getElementById('edit_star_name');
   
+  console.log('Attaching listener, editIcon found:', editIcon); // DEBUG
+  
   if (!editIcon) return;
   
-  editIcon.addEventListener('click', () => handleStarNameEdit(token));
+  editIcon.addEventListener('click', () => {
+    console.log('Edit icon clicked!'); // DEBUG
+    handleStarNameEdit(token);
+  });
 }
 
 // Handle the edit click
 function handleStarNameEdit(token) {
   const starNameEl = document.getElementById('star_name');
-  const currentName = starNameEl.childNodes[0].textContent.trim();
+  
+  // Clone the element to get text without the icon
+  const clone = starNameEl.cloneNode(true);
+  const iconInClone = clone.querySelector('.edit-icon, .fa-edit');
+  if (iconInClone) iconInClone.remove();
+  const currentName = clone.textContent.trim();
+  
+  console.log('Editing star name:', currentName);
   
   // Create input field
   const input = document.createElement('input');
   input.type = 'text';
   input.value = currentName;
-  input.className = 'form-control d-inline-block';
-  input.style.width = 'auto';
-  input.style.maxWidth = '300px';
+  input.className = 'form-control form-control-sm d-inline-block';
+  input.style.minWidth = '200px';
   
-  // Replace content with input
+  // Replace content
   starNameEl.innerHTML = '';
   starNameEl.appendChild(input);
   input.focus();
   input.select();
   
-  // Save on blur
-  input.addEventListener('blur', () => saveStarName(input, currentName, token));
+  // Handle save/cancel
+  let saved = false;
   
-  // Save on Enter, cancel on Escape
+  const save = () => {
+    if (saved) return;
+    saved = true;
+    saveStarName(input, currentName, token);
+  };
+  
+  const cancel = () => {
+    if (saved) return;
+    saved = true;
+    restoreStarName(currentName, token);
+  };
+  
+  input.addEventListener('blur', save);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      input.blur();
+      save();
     }
     if (e.key === 'Escape') {
-      restoreStarName(currentName, token);
+      e.preventDefault();
+      cancel();
     }
   });
 }
@@ -86,10 +108,18 @@ function saveStarName(input, originalName, token) {
     
     const callback = (status, response) => {
       if (status === 200) {
+        // Update userData globally without reloading
+        if (userData && userData.user && userData.user[0]) {
+          userData.user[0].star_name = newName;
+        }
+        
         restoreStarName(newName, token);
-        loadUserProfile(token);
+        
+        // Show success modal
+        showSuccessModal("Star Name Updated!", "Your new star name has been saved successfully.");
       } else {
-        alert('Failed to update star name');
+        // Show error modal
+        showErrorModal("Update Failed", "Failed to update star name. Please try again.");
         restoreStarName(originalName, token);
       }
     };
@@ -107,91 +137,98 @@ function restoreStarName(name, token) {
   attachStarNameEditListener(token);
 }
 
-// Load and Display Inventory Items
-function loadInventory(token) {
-    if (!token) return;
+// Display Inventory Items (NO FETCH - just displays data)
+function displayUserInventory(responseData, token) {
+    if (!responseData || !responseData.userInventory) {
+        console.error("No inventory data provided");
+        return;
+    }
 
-    const callback = (status, responseData) => {
-        if (status !== 200) {
-            console.error("Failed to load inventory items:", responseData);
-            return;
-        }
+    inventoryArray = responseData.userInventory || [];
 
-        inventoryArray = responseData || [];
+    const inventoryDiv = document.getElementById("inventoryItems");
+    if (!inventoryDiv) return;
+    
+    inventoryDiv.innerHTML = "";
 
-        const inventoryDiv = document.getElementById("inventoryItems");
-        inventoryDiv.innerHTML = "";
+    inventoryArray.forEach(item => {
+        const displayItem = document.createElement("div");
+        displayItem.className = "col-4 col-md-3 mb-3";
 
-        inventoryArray.forEach(item => {
-            const displayItem = document.createElement("div");
-            displayItem.className = "col-4 col-md-3 mb-3";
+        displayItem.innerHTML = `
+            <div class="item-card text-center p-2">
+                <img src="https://raw.githubusercontent.com/yueliangg/images/main/item${item.id}.png" 
+            class="card-img-top" 
+            alt="${item.id}">
+                <p class="small mb-1">${item.name}</p>
+                <p class="small mb-0">Attraction value: ${item.attraction_value}</p>
+                <button 
+                    class="btn btn-equip btn-sm w-100" 
+                    data-inventory-id="${item.inventory_id}">
+                    ${item.is_equipped ? "Unequip" : "Equip"}
+                </button>
+            </div>
+        `;
 
-            displayItem.innerHTML = `
-                <div class="item-card text-center p-2">
-                    <img src="https://raw.githubusercontent.com/yueliangg/images/main/item${item.item_id}.png" 
-                class="card-img-top" 
-                alt="${item.id}">
-                    <p class="small mb-1">${item.name}</p>
-                    <p class="small mb-0">Attraction value: ${item.attraction_value}</p>
-                    <button 
-                        class="btn btn-equip btn-sm w-100" 
-                        data-inventory-id="${item.inventory_id}">
-                        ${item.is_equipped ? "Unequip" : "Equip"}
-                    </button>
-                </div>
-            `;
+        inventoryDiv.appendChild(displayItem);
+    });
 
-            inventoryDiv.appendChild(displayItem);
+    // Attach click listeners after rendering
+    document.querySelectorAll(".btn-equip").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const inventoryId = e.currentTarget.dataset.inventoryId;
+            if (!inventoryId) return console.error("inventoryId undefined");
+
+            handleEquipItem(inventoryId, token);
         });
-
-        // Attach click listeners after rendering
-        document.querySelectorAll(".btn-equip").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const inventoryId = e.currentTarget.dataset.inventoryId;
-                if (!inventoryId) return console.error("inventoryId undefined");
-
-                handleEquipItem(inventoryId, token);
-            });
-        });
-    };
-
-    fetchMethod(currentUrl + "/api/inventory/", callback, "GET", null, token);
+    });
 }
 
-// Load and Display Equipped Items (Inventory Route)
-function loadEquippedItems(token) {
-    const callback = (status, responseData) => {
-        if (status === 200) {
-            const items = responseData.items || [];
-            equippedArray = items; 
+// Display Equipped Items (NO FETCH - just displays data)
+function displayEquippedItems(responseData) {
+    if (!responseData || !responseData.userInventory) {
+        console.error("No inventory data provided");
+        return;
+    }
 
-            const equippedDiv = document.getElementById("equippedItems");
-            equippedDiv.innerHTML = "";
+    // Filter equipped items from inventory
+    const equippedItems = responseData.userInventory.filter(item => item.is_equipped === 1);
+    equippedArray = equippedItems;
 
-            items.forEach(item => {
-                const displayItem = document.createElement("div");
-                displayItem.className = "col-4 col-md-3 mb-3";
-                displayItem.innerHTML = `
-                    <div class="item-card text-center p-2">
-                        <img src="https://raw.githubusercontent.com/yueliangg/images/main/item${item.item_id}.png" 
-                        class="card-img-top" 
-                        alt="${item.id}">
-                        <p class="small mb-0">${item.name}</p>
-                        <p class="small mb-0">Attraction value: ${item.attraction_value}</p>
-            
-                    </div>
-                `;
-                equippedDiv.appendChild(displayItem);
-            });
+    const equippedDiv = document.getElementById("equippedItems");
+    if (!equippedDiv) return;
+    
+    equippedDiv.innerHTML = "";
 
-            document.getElementById("attraction_score").textContent = responseData.total_score || 0;
-        } 
-        else {
-            console.error("Failed to load equipped items:", responseData);
-        }
-    };
+    equippedItems.forEach(item => {
+        const displayItem = document.createElement("div");
+        displayItem.className = "col-4 col-md-3 mb-3";
+        displayItem.innerHTML = `
+            <div class="item-card text-center p-2">
+                <img src="https://raw.githubusercontent.com/yueliangg/images/main/item${item.id}.png" 
+                class="card-img-top" 
+                alt="${item.id}">
+                <p class="small mb-0">${item.name}</p>
+                <p class="small mb-0">Attraction value: ${item.attraction_value}</p>
+            </div>
+        `;
+        equippedDiv.appendChild(displayItem);
+    });
 
-    fetchMethod(currentUrl + `/api/inventory/attraction-score`, callback, "GET", null, token);
+    // Calculate total attraction score
+    const totalScore = equippedItems.reduce((sum, item) => sum + (item.attraction_value || 0), 0);
+    
+    const attractionScoreEl = document.getElementById("attraction_score");
+    const floatAttractionScore = document.getElementById("float_attraction_score");
+    if (attractionScoreEl) {
+        attractionScoreEl.textContent = totalScore;
+    }
+
+    if (floatAttractionScore) {
+        floatAttractionScore.textContent = totalScore;
+    }
+
+    
 }
 
 // Equip / Unequip inventory item
@@ -208,21 +245,30 @@ function handleEquipItem(inventoryId, token) {
 
     const callback = (status, responseData) => {
         if (status === 200) {
-            // Update local state immediately
-            currentItem.is_equipped = newEquipStatus;
+            // Update userData globally without reloading
+            if (userData && userData.userInventory) {
+                const itemToUpdate = userData.userInventory.find(item => item.inventory_id == inventoryId);
+                if (itemToUpdate) {
+                    itemToUpdate.is_equipped = newEquipStatus;
+                }
+            }
 
-            loadInventory(token);
-            loadEquippedItems(token);
-            loadUserProfile(token);
+            // Re-display inventory and equipped items with updated data
+            if (typeof displayUserInventory === 'function') {
+                displayUserInventory(userData, token);
+            }
+            if (typeof displayEquippedItems === 'function') {
+                displayEquippedItems(userData);
+            }
+
+            // Show success message
+            const action = newEquipStatus ? "equipped" : "unequipped";
+            showSuccessModal("Item Updated!", `Item has been ${action} successfully.`);
         } else {
             console.error("Failed to equip item:", responseData);
+            showErrorModal("Update Failed", "Failed to update item. Please try again.");
         }
     };
 
     fetchMethod(currentUrl + "/api/inventory/update-equip", callback, "PUT", data, token);
 }
-
-
-
-
-

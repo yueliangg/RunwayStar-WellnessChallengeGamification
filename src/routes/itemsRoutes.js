@@ -7,7 +7,7 @@ const inventoryController = require('../controllers/inventoryController');
 const jwtMiddleware = require('../middleware/jwtMiddleware')
 const { withMessage, sendResponse } = require('../middleware/response');
 
-// Route: GET /items
+// Route: GET /items/all
 // Description: Retrieve all available items in the system
 router.get('/all', 
     itemsController.getNormalItems, 
@@ -15,16 +15,6 @@ router.get('/all',
     withMessage('All Items retreived successfully', 200),
     sendResponse
 )
-
-// Route: POST /items
-// Description: Create a new item
-router.post('/', 
-    itemsController.checkItemNameExists,        
-    itemsController.createItem,               
-    itemsController.getItem,                  
-    withMessage('Item created successfully', 201),
-    sendResponse
-);
 
 // Route: PUT /items/:item_id
 // Description: Update an existing item

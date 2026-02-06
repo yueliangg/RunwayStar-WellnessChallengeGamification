@@ -1,5 +1,4 @@
 // Globals 
-let currentUserId = null;
 let normalItemsArray = [];
 let exclusiveItemsArray = [];
 
@@ -8,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const token = getToken();
     if (!token) return;
 
-    loadUserProfile(token);
+    loadAllUserData(token);
     loadAllItems(token);
 });
 
@@ -171,8 +170,14 @@ function purchaseItem(itemId, type) {
         if (responseStatus === 200 || responseStatus === 201) {
             showSuccessModal('Purchase Successful', `You've acquired ${item.name}!`);
             
-            // Reload user profile to update wallet
-            loadUserProfile(token);
+            // Update points/diamonds in UI immediately
+            const isDiamond = item.cost_points === 0 || item.cost_points === null;
+            if (isDiamond) {
+                updateUserDiamonds(-item.cost_diamonds);
+            } else {
+                updateUserPoints(-item.cost_points);
+            }
+            
         } else if (responseStatus === 409) {
             showErrorModal('Already Owned', 'You already own this item!');
         } else if (responseStatus === 422) {
@@ -185,4 +190,24 @@ function purchaseItem(itemId, type) {
     };
     
     fetchMethod(currentUrl + `/api/items/${itemId}/buy`, callback, "POST", data, token);
+}
+
+// Update user diamonds in UI without reloading
+function updateUserDiamonds(diamondsToAdd) {
+    const diamondsElement = document.getElementById("diamonds");
+    if (diamondsElement) {
+        const currentDiamonds = parseInt(diamondsElement.textContent) || 0;
+        const newDiamonds = currentDiamonds + diamondsToAdd;
+        diamondsElement.textContent = newDiamonds;
+    }
+}
+
+// Add this function to update user points in UI without reloading
+function updateUserPoints(pointsToAdd) {
+    const pointsElement = document.getElementById("points");
+    if (pointsElement) {
+        const currentPoints = parseInt(pointsElement.textContent) || 0;
+        const newPoints = currentPoints + pointsToAdd;
+        pointsElement.textContent = newPoints;
+    }
 }

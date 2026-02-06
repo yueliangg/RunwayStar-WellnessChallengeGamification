@@ -57,18 +57,27 @@ function updateAvatarInBackend(avatarFile) {
     const callback = (status, responseData) => {
         if (status === 200) {
             console.log("Avatar saved successfully:", responseData);
-            // Reload user profile to sync with backend
-            const token = localStorage.getItem("token");
-            if (token) {
-                loadUserProfile(token);
+            
+            // Update userData globally without reloading
+            if (userData && userData.user && userData.user[0]) {
+                userData.user[0].profile_avatar = avatarFile;
             }
+            
+            // Re-display profile with updated data
+            displayUserProfile(userData);
+            
+            // Show success modal
+            showSuccessModal("Avatar Updated!", "Your new avatar has been saved successfully.");
         } else {
             console.error("Failed to save avatar. Status:", status, "Response:", responseData);
-            alert("Failed to update avatar. Please try again.");
-            // Reload to revert to original avatar
-            const token = localStorage.getItem("token");
-            if (token) {
-                loadUserProfile(token);
+            
+            // Show error modal
+            showErrorModal("Update Failed", "Failed to update avatar. Please try again.");
+            
+            // Revert to original avatar visually
+            const selectedAvatar = document.getElementById("selectedAvatar");
+            if (userData && userData.user && userData.user[0]) {
+                selectedAvatar.src = `https://raw.githubusercontent.com/yueliangg/images/main/${userData.user[0].profile_avatar}`;
             }
         }
     };

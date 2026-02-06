@@ -1,50 +1,5 @@
 const model = require('../models/itemsModel');
 
-// GET all items
-module.exports.getAllItems = (req, res, next) => {
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error getAllItems: ", error);
-            return res.status(500).json(error);
-        }
-        res.locals.data = results;
-        next();
-    };
-
-    model.selectAllItems(callback);
-};
-
-//Creating New Item
-module.exports.createItem = (req, res, next) => {
-    if (req.body.name == undefined ||
-        req.body.type == undefined ||
-        req.body.cost_points == undefined ||
-        req.body.cost_diamonds == undefined ||
-        req.body.attraction_value == undefined) {
-        return res.status(400).json({ message: "Not enough fields provided for update" });
-    }
-
-    const data = {
-        name: req.body.name,
-        type: req.body.type,
-        cost_points: req.body.cost_points,
-        cost_diamonds: req.body.cost_diamonds,
-        attraction_value: req.body.attraction_value
-    };
-
-    const callback = (error, results, fields) => {
-        if (error) {
-            console.log("Error createItem:", error);
-            return res.status(500).json(error);
-        }
-
-        res.locals.item_id = results.insertId; // store inserted ID
-        next();
-    };
-
-    model.insertItem(data, callback);
-};
-
 // Update Item
 module.exports.updateItem = (req, res, next) => {
     if (req.body.name == undefined ||
@@ -170,7 +125,6 @@ module.exports.deductCurrency = (req, res, next) => {
     model.deductCurrency(data, callback);
 };
 
-
 // Add item to inventory
 module.exports.addToInventory = (req, res, next) => {
     const data = {
@@ -189,6 +143,8 @@ module.exports.addToInventory = (req, res, next) => {
 
     model.addToInventory(data, callback);
 };
+
+//get normal items
 module.exports.getNormalItems = (req, res, next) => {
     const callback = (err, results) => {
         if (err) {
@@ -206,6 +162,7 @@ module.exports.getNormalItems = (req, res, next) => {
     model.getNormalItems(callback);
 };
 
+//get exclusive items
 module.exports.getExclusiveItems = (req, res, next) => {
     const callback = (err, results) => {
         if (err) {

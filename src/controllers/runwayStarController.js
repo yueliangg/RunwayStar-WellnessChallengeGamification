@@ -5,24 +5,38 @@ const model = require('../models/runwayStarModel');
 // - Calculates final ranks and diamond rewards
 // - Inserts results into RunwayStar table
 module.exports.insertTop3RunwayStars = (req, res, next) => {
+    console.log('\n=== START insertTop3RunwayStars ===');
+    
     const top3 = res.locals.top3;
+    console.log('top3 data:', JSON.stringify(top3, null, 2));
+    
     const rewards = [100, 50, 30];
 
     const data = {
-        values: top3.map((entry, index) => ([
-            entry.user_id,
-            req.body.fashion_show_id,
-            entry.attraction_score,
-            index + 1,
-            rewards[index]
-        ]))
+        values: top3.map((entry, index) => {
+            const row = [
+                entry.user_id,
+                req.body.fashion_show_id,
+                entry.attraction_score,
+                index + 1,
+                rewards[index]
+            ];
+            console.log(`Row ${index + 1}:`, row);
+            console.log(`  user_id: ${entry.user_id} (type: ${typeof entry.user_id})`);
+            return row;
+        })
     };
+
+    console.log('Full data object for insert:', JSON.stringify(data, null, 2));
 
     const callback = (error, results) => {
         if (error) {
-            console.log("Error insertTop3RunwayStars:", error);
+            console.log('❌ ERROR in insertTop3RunwayStars:', error);
             return res.status(500).json(error);
         }
+
+        console.log('✓ Insert successful');
+        console.log('Insert results:', JSON.stringify(results, null, 2));
 
         res.locals.data = top3.map((entry, index) => ({
             user_id: entry.user_id,
@@ -31,6 +45,9 @@ module.exports.insertTop3RunwayStars = (req, res, next) => {
             final_rank: index + 1,
             diamonds_won: rewards[index]
         }));
+
+        console.log('res.locals.data set to:', JSON.stringify(res.locals.data, null, 2));
+        console.log('=== END insertTop3RunwayStars ===\n');
 
         next();
     };
@@ -53,22 +70,6 @@ module.exports.getFinalsByFashionShow = (req, res, next) => {
     };
 
     model.selectRunwayStarsByShow(data, callback);
-};
-
-//Get all the finals ranks of all the shows
-module.exports.getAllFinals = (req, res, next) => {
-    const callback = (error, results) => {
-        if (error) {
-            console.log("Error getAllFinals:", error);
-            return res.status(500).json(error);
-        }
-
-        // Store results in res.locals for withMessage middleware
-        res.locals.data = results;
-        next();
-    };
-
-    model.selectAllFinalRunwayStars(callback);
 };
 
 //delete Entry by fashion_show_id and user_id

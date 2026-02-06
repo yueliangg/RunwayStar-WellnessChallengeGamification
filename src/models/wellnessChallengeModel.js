@@ -119,17 +119,6 @@ module.exports.selectUserCompletionByUser = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
-//select all completions
-module.exports.selectAllCompletions = (data, callback) => {
-    const SQLSTATEMENT = `
-        SELECT user_id, details
-        FROM UserCompletion
-        WHERE challenge_id = ?
-    `;
-    const VALUES = [data.challenge_id]
-    pool.query(SQLSTATEMENT, VALUES, callback);
-};
-
 //select all completions by user
 module.exports.selectAllCompletionsByUser = (data, callback) => {
     const SQLSTATEMENT = `

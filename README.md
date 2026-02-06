@@ -169,10 +169,10 @@ Register a new user by checking username/email availability, hashing the passwor
 
 ```json
 {
-  "username": "Dashi",
-  "email": "dashi@example.com",
+  "username": "Thawdar",
+  "email": "Thawdar@example.com",
   "password": "1234",
-  "star_name": "Dashi"
+  "star_name": "Thawdar"
 }
 ```
 
@@ -180,7 +180,7 @@ Register a new user by checking username/email availability, hashing the passwor
 
 ```json
 {
-    "message": "User Dashi created successfully.",
+    "message": "User Thawdar created successfully.",
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsInRpbWVzdGFtcCI6IjIwMjYtMDEtMjhUMDk6MDA6MTcuMTkyWiIsImlhdCI6MTc2OTU5MDgxNywiZXhwIjoxNzY5Njc3MjE3fQ.EiWfLoW6ANtYBfAo90GJZDzWsQNMQ1wJlunaSHbq9vU"
 }
 ```
@@ -198,52 +198,132 @@ Register a new user by checking username/email availability, hashing the passwor
 
 ## User API Endpoints
 
-### 1. Get All Users
-**GET** `/users`
+### 1. Get Specific User
+**GET** `/api/users/me`
 
-Retrieves all users.
+Retrieves a specific user and its details: completions, inventory, fashionshow.
 
-**Success Response**
-- `200 OK`
-
----
-
-### 2. Get User by ID
-**GET** `/users/{user_id}`
-
-Retrieves a specific user.
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
 
 **Success Response**
 - `200 OK`
-
+```json
+{
+    "user": [
+        {
+            "id": 1,
+            "username": "Dashi",
+            "email": "dashi@example.com",
+            "password": "$2b$10$lebzpLLNIHQxJHKPXM8ESuO4PD.S.OS03iGU3mLvFwC66DOzCwqYO",
+            "star_name": "Aurora Blaze",
+            "points": 300,
+            "diamonds": 200,
+            "attraction_score": 0,
+            "profile_avatar": "pfp1.jpg"
+        }
+    ],
+    "userCompletions": [
+        {
+            "completion_id": 1,
+            "user_id": 1,
+            "challenge_id": 1,
+            "details": "Slept 8 hours",
+            "creator_id": 1,
+            "description": "Sleep at least 7 hours",
+            "points": 50
+        },
+        {
+            "completion_id": 2,
+            "user_id": 1,
+            "challenge_id": 2,
+            "details": "Drank 2L water",
+            "creator_id": 1,
+            "description": "Drink at least 2 liters of water",
+            "points": 50
+        }
+    ],
+    "userInventory": [
+        {
+            "inventory_id": 1,
+            "user_id": 1,
+            "is_equipped": 1,
+            "name": "Celestial Silk Gown",
+            "type": "normal",
+            "attraction_value": 15,
+            "id": 1
+        },
+        {
+            "inventory_id": 2,
+            "user_id": 1,
+            "is_equipped": 1,
+            "name": "Butterfly Chiffon Dress",
+            "type": "normal",
+            "attraction_value": 20,
+            "id": 2
+        }
+    ],
+    "userFashionShow": [
+        {
+            "id": 1,
+            "date": "2025-12-25",
+            "description": "Winter Glam Runway Show",
+            "participants": 5,
+            "status": "completed",
+            "show_id": 1,
+            "user_id": 1,
+            "attraction_score": 0
+        }
+    ]
+}
+```
 **Error Responses**
+- `401 Invalid token`
 - `404 Not Found` – User does not exist
 
 ---
 
-### 3. Update User
-**PUT** `/users/{user_id}`
+### 2. Update User
+**PUT** `/api/users/`
 
 Updates user information.
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
 
 **Request Body:**  
 ```json
 {
-  "username": "Thawdar",
-  "star_name": "yueliang",
-  "points": 100,
-  "diamonds": 20
+  "star_name": "Aurora"
 }
 ```
 
 **Respond:**  
 ```json
 {
-    "id": 9,
-    "username": "thawdarr",
-    "star_name": "baybay",
-    "points": 100,
-    "diamonds": 20
+    {
+    "user": [
+        {
+            "id": 1,
+            "username": "Dashi",
+            "email": "dashi@example.com",
+            "password": "$2b$10$Mq4owsnQjEpkj/JODfLrs.FSdVcfa.G8CwFNkvRgh5aLkuiTCPzrq",
+            "star_name": "Aurora",
+            "points": 300,
+            "diamonds": 300,
+            "attraction_score": 35,
+            "profile_avatar": null
+        }
+    ]
+}
 }
 ```
 **Success Response**
@@ -253,12 +333,41 @@ Updates user information.
 - `404 Not Found` – Requested `user_id` does not exist
 - `409 Conflict` – Username is already associated with another user
 
+---
 
-Sure! Here's your **fashion show endpoint** documented in the same format as your previous examples:
+### 3. Update Avatar
+**PUT** `/api/users/update-avatar`
+
+Updates the user's profile avatar.
+
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
+
+**Request Body:**
+```json
+{
+  "avatar": "pfp2.jpg"
+}
+```
+
+**Success Response:**
+- `200 OK`
+```json
+{
+  "message": "Avatar updated successfully"
+}
+```
+
+**Error Responses:**
+- `404 Not Found` – User not found
+- `500 Internal Server Error` – Database error
 
 ---
 
-### 4. Get User's Fashion Shows
 
 **GET** `/users/fashion-show`
 
@@ -295,370 +404,351 @@ Authorization: Bearer <JWT token>
 * `404 Not Found` – User not found or user has not joined any fashion shows
 
 ---
+
 ## Wellness Challenge endpoints
 
-### 5. Create Wellness Challenge Completion
-**POST** `/user-completions`
+### 4. Create Wellness Challenge
+**POST** `/api/challenges/create`
 
-Creates a wellness Challenge
-**Request Body:**  
+Creates a new wellness challenge.
+
+**Headers:**
 ```json
 {
-    "description": "Talk with a family or friend",
-    "user_id": 4,
-    "points": 75
+  "Authorization": "Bearer <token>"
 }
 ```
 
-**Respond:**  
+**Request Body:**
 ```json
 {
-    "id": 9,
-    "description": "Talk with a family or friend",
-    "creator_id": 4,
-    "points": 75
+  "description": "Drink at least 2 liters of water",
+  "points": 50
 }
 ```
-**Success Response**
+
+**Success Response:**
 - `201 Created`
+```json
+{
+  "message": "Challenge created successfully",
+  "data": {
+    "challenge_id": 1,
+    "creator_id": 1,
+    "description": "Drink at least 2 liters of water",
+    "points": 50
+  }
+}
+```
 
-**Error Responses**
-- `400 Bad Request` – Request body is missing `question` or `user_id`
+**Error Responses:**
+- `400 Bad Request` – Missing required fields
+- `500 Internal Server Error` – Database error
 
 ---
 
-### 6. Get Wellness Challenges
-**GET** `/challenges`
+### 5. Get All Wellness Challenges
+**GET** `/api/challenges/`
 
-Retrieves all wellness challenges.
+Fetches all wellness challenges available in the system.
 
-**Success Response**
+**Success Response:**
 - `200 OK`
+```json
+{
+  "message": "All Challenge fetched successfully",
+  "data": [
+    {
+      "challenge_id": 1,
+      "creator_id": 1,
+      "description": "Sleep at least 7 hours",
+      "points": 50
+    },
+    {
+      "challenge_id": 2,
+      "creator_id": 1,
+      "description": "Drink at least 2 liters of water",
+      "points": 50
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `500 Internal Server Error` – Database error
 
 ---
 
-### 7. Delete Wellness Challenge
-**DELETE** `/challenges/{challenge_id}`
+### 6. Delete Wellness Challenge
+**DELETE** `/api/challenges/:challenge_id`
 
-Deletes a wellness challenge.
-The challenges's associated user completions, if any, also be deleted
+Deletes a specific challenge and all associated user completions.
 
-**Success Response**
+**URL Parameters:**
+- `challenge_id` (integer) – ID of the challenge to delete
+
+**Success Response:**
 - `204 No Content`
+```json
+{
+  "message": "Challenge delete successfully"
+}
+```
 
-**Error Responses**
-- `404 Not Found` – Requested `challenge_id` does not exist
+**Error Responses:**
+- `404 Not Found` – Challenge not found
+- `500 Internal Server Error` – Database error
 
 ---
 
-### 8. Update Wellness Challenge
-**PUT** `/challenges/{challenge_id}`
+### 7. Update Wellness Challenge
+**PUT** `/api/challenges/:challenge_id`
 
-Updates an existing wellness challenge.  
-Only the original creator is allowed to perform this action.
+Updates an existing challenge. Only the challenge creator can update it.
 
-**Request Body:**  
+**URL Parameters:**
+- `challenge_id` (integer) – ID of the challenge to update
+
+**Request Body:**
 ```json
 {
-    "description": "Talk with a family or friend",
-    "user_id": 4,
-    "points": 75
+  "description": "Sleep at least 8 hours",
+  "points": 60
 }
 ```
 
-**Respond:**  
-```json
-{
-    "id": 9,
-    "description": "Talk with a family or friend",
-    "creator_id": 4,
-    "points": 75
-}
-```
-**Success Response**
+**Success Response:**
 - `200 OK`
-
-**Error Responses**
-- `400 Bad Request` – Request body is missing `description`, `points`, or `user_id`
-- `403 Forbidden` – `creator_id` does not match the challenge owner
-- `404 Not Found` – Requested `challenge_id` does not exist
-
-### 9. Create Challenge Completion
-**POST** `/challenges/{challenge_id}`
-
-Creates a completion record for a user when a wellness challenge is completed.
-Points are also rewarded to user accordingly.
-
-**Request Body:**  
 ```json
 {
-    "user_id": 4,
-    "details": "Talked to a brother."
+  "message": "Challenge updated successfully",
+  "data": {
+    "challenge_id": 1,
+    "creator_id": 1,
+    "description": "Sleep at least 8 hours",
+    "points": 60
+  }
 }
 ```
 
-**Respond:**  
+**Error Responses:**
+- `403 Forbidden` – User is not the challenge creator
+- `404 Not Found` – Challenge not found
+- `500 Internal Server Error` – Database error
+
+---
+
+### 8. Complete a Challenge
+**POST** `/api/challenges/:challenge_id/record`
+
+Creates a completion record when a user completes a challenge and rewards points to the user.
+
+**Headers:**
 ```json
 {
-    "id": 11,
-    "challenge_id": 9,
-    "user_id": 4,
-    "details": "Talked to a brother."
+  "Authorization": "Bearer <token>"
 }
 ```
 
-**Success Response**
+**URL Parameters:**
+- `challenge_id` (integer) – ID of the challenge to complete
+
+**Request Body:**
+```json
+{
+  "details": "Slept 8 hours last night"
+}
+```
+
+**Success Response:**
 - `201 Created`
+```json
+{
+  "message": "Record created successfully",
+  "data": {
+    "completion_id": 1,
+    "user_id": 1,
+    "challenge_id": 1,
+    "details": "Slept 8 hours last night"
+  }
+}
+```
 
-**Error Handling**
-- `404 Not Found` – Requested `challenge_id` does not exist  
-- `404 Not Found` – Requested `user_id` does not exist  
-
-**Notes**
-- User is rewarded with points upon successful completion
+**Error Responses:**
+- `404 Not Found` – Challenge or user not found
+- `409 Conflict` – User has already completed this challenge
+- `500 Internal Server Error` – Database error
 
 ---
 
-### 10. Get Challenge Completion Records
-**GET** `/challenges/{challenge_id}`
+### 9. Delete Challenge Completion
+**DELETE** `/api/challenges/:challenge_id/record`
 
-Retrieves all completion records for a specific wellness challenge.
+Deletes a user's completion record for a specific challenge and deducts the awarded points.
 
-**Path Parameters**
-- `challenge_id` (integer) – ID of the challenge
+**Headers:**
+```json
+{
+  "Authorization": "Bearer <token>"
+}
+```
 
-**Success Response**
-- `200 OK`
+**URL Parameters:**
+- `challenge_id` (integer) – ID of the challenge completion to delete
 
-**Error Handling**
-- `404 Not Found` – No completion records exist for the requested `challenge_id`
+**Success Response:**
+- `204 No Content`
+```json
+{
+  "message": "Challenge delete successfully"
+}
+```
 
+**Error Responses:**
+- `404 Not Found` – Completion record not found
+- `500 Internal Server Error` – Database error
+
+---
 
 ## Items API Endpoints
 
-### 1. Get All Items
-**GET** `/items`
+### 10. Get All Items
+**GET** `/api/items/all`
 
-Retrieve all available items in the system.
+Retrieves all available items in the system (both normal and exclusive items).
 
-**Respond:**  
-```json
-[
-    {
-        "id": 1,
-        "name": "Silk Dress",
-        "type": "Outfit",
-        "cost_points": 100,
-        "cost_diamonds": 0,
-        "attraction_value": 10
-    },
-    {
-        "id": 2,
-        "name": "Golden Heels",
-        "type": "Shoes",
-        "cost_points": 150,
-        "cost_diamonds": 0,
-        "attraction_value": 15
-    }
-]
-```
-**Success Response**
+**Success Response:**
 - `200 OK`
-
-### 2. Create Item
-**POST** `/items`
-
-Create a new item.
-
-**Request Body:**  
 ```json
 {
-   "name": "Moon Dress",
-   "type": "Outfit",
-   "cost_points": 100,
-   "cost_diamonds": 0,
-   "attraction_value": 10
+  "message": "All Items retrieved successfully",
+  "data": {
+    "normalItems": [
+      {
+        "id": 1,
+        "name": "Celestial Silk Gown",
+        "type": "normal",
+        "attraction_value": 15,
+        "price_diamonds": null,
+        "price_points": 100
+      },
+      {
+        "id": 2,
+        "name": "Butterfly Chiffon Dress",
+        "type": "normal",
+        "attraction_value": 20,
+        "price_diamonds": null,
+        "price_points": 150
+      }
+    ],
+    "exclusiveItems": [
+      {
+        "id": 3,
+        "name": "Diamond Tiara",
+        "type": "exclusive",
+        "attraction_value": 50,
+        "price_diamonds": 100,
+        "price_points": null
+      }
+    ]
+  }
 }
 ```
 
-**Respond:**  
-```json
-{
-   "id": 3,
-   "name": "Moon Dress",
-   "type": "Outfit",
-   "cost_points": 100,
-   "cost_diamonds": 0,
-   "attraction_value": 10
-}
-```
+**Error Responses:**
+- `500 Internal Server Error` – Database error
 
-**Success Response**
-- `201 Created`
+---
 
-**Error Handling**
-- `400 Bad Request` – Missing required fields
-- `409 Conflict` – Item name already exists
+### 11. Update Item
+**PUT** `/api/items/:item_id`
 
-### 3. Update Item
+Updates an existing item's details.
 
-**PUT** `/items/{item_id}`
-
-Update an existing item.
+**URL Parameters:**
+- `item_id` (integer) – ID of the item to update
 
 **Request Body:**
-
 ```json
 {
-   "name": "Moon Dress",
-   "type": "Outfit",
-   "cost_points": 100,
-   "cost_diamonds": 0,
-   "attraction_value": 10
-}
-````
-
-**Response:**
-
-```json
-{
-   "id": 3,
-   "name": "Moon Dress",
-   "type": "Outfit",
-   "cost_points": 100,
-   "cost_diamonds": 0,
-   "attraction_value": 10
+  "name": "Royal Silk Gown",
+  "attraction_value": 25,
+  "price_points": 120
 }
 ```
 
 **Success Response:**
-* `200 OK`
-
-**Error Handling:**
-* `400 Bad Request` – Invalid request body
-* `404 Not Found` – Item does not exist
-* `409 Conflict` – Updated item name already exists
-
----
-
-### 4. Purchase Item
-
-**POST** `/items/{item_id}/buy`
-
-Purchase an item and add it to the user's inventory.
-
-#### Flow of Controllers
-
-1. **`userController.checkUserId`** – Verifies that the `user_id` in the request exists in the database.  
-2. **`itemsController.getItem`** – Checks that the `item_id` exists and fetches the item details.  
-3. **`inventoryController.checkUserAlreadyOwnsItem`** – Ensures that the user hasn't already purchased this item.  
-4. **`itemsController.checkUserHasCurrency`** – Confirms the user has enough points or diamonds to buy the item.  
-5. **`itemsController.deductCurrency`** – Deducts the appropriate amount of points/diamonds from the user.  
-6. **`itemsController.addToInventory`** – Adds the purchased item to the user's inventory.  
-7. **`inventoryController.getPurchasedInventoryById`** – Retrieves the new inventory record to include in the response.  
-8. **`withMessage('Item purchased successfully', 201)`** – Attaches a success message and status code.  
-9. **`sendResponse`** – Sends the final JSON response back to the client.  
-
-**Request Body:**
-
+- `200 OK`
 ```json
 {
-    "user_id": 1
+  "message": "Item updated successfully",
+  "data": {
+    "id": 1,
+    "name": "Royal Silk Gown",
+    "type": "normal",
+    "attraction_value": 25,
+    "price_diamonds": null,
+    "price_points": 120
+  }
 }
 ```
 
-**Response:**
+**Error Responses:**
+- `404 Not Found` – Item not found
+- `409 Conflict` – Item name already exists
+- `500 Internal Server Error` – Database error
 
+---
+
+### 12. Purchase Item
+**POST** `/api/items/:item_id/buy`
+
+Purchases an item and adds it to the user's inventory. Deducts the appropriate currency (points or diamonds) from the user.
+
+**Headers:**
 ```json
 {
-    "inventory_id": 15,
-    "user_id": 9,
+  "Authorization": "Bearer <token>"
+}
+```
+
+**URL Parameters:**
+- `item_id` (integer) – ID of the item to purchase
+
+**Success Response:**
+- `201 Created`
+```json
+{
+  "message": "Item purchased successfully",
+  "data": {
+    "inventory_id": 1,
+    "user_id": 1,
     "item_id": 1,
     "is_equipped": 0,
-    "name": "Silk Dress",
-    "type": "Outfit",
-    "attraction_value": 10,
-    "points_spent": 100,
-    "remaining_points": 75,
-    "remaining_diamonds": 20
+    "name": "Celestial Silk Gown",
+    "type": "normal",
+    "attraction_value": 15
+  }
 }
 ```
 
-#### Success Response:
-
-* `201 Created` – Item purchased successfully
-
-#### Error Handling:
-
-* `400 Bad Request` – Invalid request body
-* `404 Not Found` – User or item does not exist
-* `409 Conflict` – User already owns this item
-* `422 Unprocessable Entity` – Not enough points/diamonds
+**Error Responses:**
+- `400 Bad Request` – Insufficient points or diamonds
+- `404 Not Found` – Item or user not found
+- `409 Conflict` – User already owns this item
+- `500 Internal Server Error` – Database error
 
 ---
 
-# Inventory API
+## Inventory API Endpoints
 
 This API handles user inventories, including fetching items, updating equip status, and calculating attraction scores.
 
----
+### 13. Update Inventory Equip Status
 
-## 1. Get User Inventory
+**PUT** `/api/inventory/update-equip`
 
-**GET** `/inventory/:user_id`
-
-Retrieve the full inventory for a specific user.
-
-**Middleware Flow:**
-
-1. **`userController.checkUserId`** – Validates that the user exists.  
-2. **`inventoryController.getInventoryByUser`** – Fetches all inventory items belonging to the user.  
-3. **`withMessage('User inventory retrieved successfully', 200)`** – Attaches a success message and HTTP 200 status code.  
-4. **`sendResponse`** – Sends the response back to the client.  
-
-**Success Response:**
-
-```json
-[
-    {
-        "inventory_id": 4,
-        "user_id": 3,
-        "is_equipped": 1,
-        "name": "Runway Makeup",
-        "type": "Makeup",
-        "attraction_value": 12
-    },
-    {
-        "inventory_id": 5,
-        "user_id": 3,
-        "is_equipped": 1,
-        "name": "Crystal Gown",
-        "type": "Exclusive",
-        "attraction_value": 45
-    }
-]
-
-```
-
-**Error Handling:**
-* `404 Not Found` – User does not exist
-
----
-
-## 2. Update Inventory Equip Status
-
-**PUT** `/inventory/update-equip`
-
-Update the `is_equipped` status (0 or 1) of an inventory item.
-
-**Middleware Flow:**
-
-1. **`userController.checkUserId`** – Ensures the user performing the action exists.
-2. **`inventoryController.checkInventory`** – Verifies the inventory item exists and belongs to the user. Returns `404` or `403` if invalid.
-3. **`inventoryController.updateEquipStatus`** – Updates the equip status and handles conflicts (returns `409` if another item is already equipped in the same slot).
-4. **`inventoryController.getInventoryById`** – Retrieves the updated inventory item.
-5. **`withMessage('Item equip status updated', 200)`** – Attaches a success message.
-6. **`sendResponse`** – Sends the updated inventory data.
+Update equip status and recalculate attraction score
 
 **Request Body:**
 
@@ -674,10 +764,20 @@ Update the `is_equipped` status (0 or 1) of an inventory item.
 
 ```json
 {
-    "id": 2,
     "user_id": 1,
-    "item_id": 2,
-    "is_equipped": 0
+    "total_score": 15,
+    "equipped_items": [
+        {
+            "id": 1,
+            "name": "Celestial Silk Gown",
+            "type": "normal",
+            "attraction_value": 15,
+            "cost_points": 120,
+            "cost_diamonds": 0,
+            "inventory_id": 1,
+            "is_equipped": 1
+        }
+    ]
 }
 ```
 
@@ -688,54 +788,13 @@ Update the `is_equipped` status (0 or 1) of an inventory item.
 - `409 Conflict` – Equip conflict (Item is already equipped or unequipped)
 - `400 Bad Request` – Invalid request body (e.g., `is_equipped` not 0 or 1) 
 ---
-
-## 3. Get User Attraction Score
-
-**GET** `/inventory/:user_id/attraction-score`
-
-Calculate the user's total **attraction score** based on currently equipped items.
-
-**Middleware Flow:**
-
-1. **`userController.checkUserId`** – Validates that the user exists.  
-2. **`inventoryController.calculateAttractionScore`** – Calculates total attraction score using equipped items only.  
-3. **`withMessage('User attraction score retrieved successfully', 200)`** – Attaches a success message.  
-4. **`sendResponse`** – Sends the calculated score to the client.  
-
-**Success Response:**
-- `200 OK`
-
-```json
-{
-    "user_id": "3",
-    "total_score": 67,
-    "items": [
-        {
-            "name": "Runway Makeup",
-            "attraction_value": 12
-        },
-        {
-            "name": "Crystal Gown",
-            "attraction_value": 45
-        },
-        {
-            "name": "Silk Dress",
-            "attraction_value": 10
-        }
-    ]
-}
-```
----
-
-# Fashion Show API
+## Fashion Show API
 
 This API manages fashion shows, including creating and updating them.
 
----
+### 14. Create Fashion Show
 
-## 1. Create Fashion Show
-
-**POST** `/fashion-show`
+**POST** `/api/fashion-show`
 
 Create a new fashion show.
 
@@ -767,44 +826,9 @@ Create a new fashion show.
 
 ---
 
-## 2. Update Fashion Show
+### 15. Get All Fashion Shows
 
-**PUT** `/fashion-show/:fashion_show_id`
-
-Update an existing fashion show by ID.
-
-**Request Body:**
-
-```json
-{
-    "date": "2026-02-15",
-    "description": "Summer Gala"
-}
-```
-
-**Success Response:**
-
-* Status: `200 OK`
-
-```json
-{
-    "id": 1,
-    "date": "2026-02-15",
-    "description": "Summer Gala"
-}
-```
-
-**Error Handling:**
-
-* `400 Bad Request` – Invalid request body
-* `404 Not Found` – Fashion show does not exist
-* `409 Conflict` – Updated name conflicts with another show
-
----
-
-## 4. Get All Fashion Shows
-
-**GET** `/fashion-show/`  
+**GET** `/api/fashion-show/all`  
 
 Retrieve a list of all fashion shows.
 
@@ -828,15 +852,13 @@ Retrieve a list of all fashion shows.
 ```
 ---
 
-# Fashion Show Entry API
+## Fashion Show Entry API
 
 This API manages user entries in fashion shows, including fetching entries, entering a show, and deleting entries.
 
----
+## 16. Get All Entries for a Fashion Show
 
-## 1. Get All Entries for a Fashion Show
-
-**GET** `/fashion-show-entry/:fashion_show_id`
+**GET** `/api/fashion-show-entry/:fashion_show_id`
 
 Fetch all user entries for a specific fashion show.
 
@@ -866,9 +888,9 @@ Fetch all user entries for a specific fashion show.
 
 ---
 
-## 2. Enter a Fashion Show
+## 17. Enter a Fashion Show
 
-**POST** `/fashion-show-entry/enter`
+**POST** `/api/fashion-show-entry/enter`
 
 Allows a user to enter a fashion show. User's attraction score is calculated based on equipped items.
 
@@ -902,7 +924,7 @@ Allows a user to enter a fashion show. User's attraction score is calculated bas
 
 ---
 
-## 3. Delete User Entry from Fashion Show
+## 18. Delete User Entry from Fashion Show
 
 **DELETE** `/fashion-show-entry/:fashion_show_id/:user_id`
 
@@ -916,15 +938,13 @@ Remove a user's entry from a fashion show completely. Also deletes associated Ru
 
 ---
 
-# Runway Star API
+## Runway Star API
 
 This API manages the top 3 runway stars for fashion shows, including finalizing results and fetching rankings.
 
----
+### 19. Finalize Fashion Show Top 3
 
-## 1. Finalize Fashion Show Top 3
-
-**POST** `/runway-star/finalize`  
+**POST** `/api/runway-star/finalize`  
 
 Finalize a fashion show by selecting the top 3 runway stars and distributing diamond rewards.
 
@@ -943,25 +963,43 @@ Finalize a fashion show by selecting the top 3 runway stars and distributing dia
 ```json
 [
     {
+        "username": "Zara",
+        "star_name": "Crimson Glow",
         "user_id": 5,
-        "show_id": 1,
-        "total_attraction": 95,
+        "show_id": 2,
+        "total_attraction": 0,
         "final_rank": 1,
-        "diamonds_won": 100
+        "diamonds_won": 100,
+        "date": "2026-12-06",
+        "description": "Spring Summer Runway Show",
+        "status": "completed",
+        "participants": 4
     },
     {
-        "user_id": 3,
-        "show_id": 1,
-        "total_attraction": 67,
+        "username": "Mia",
+        "star_name": "Luna Silk",
+        "user_id": 2,
+        "show_id": 2,
+        "total_attraction": 0,
         "final_rank": 2,
-        "diamonds_won": 50
+        "diamonds_won": 50,
+        "date": "2026-12-06",
+        "description": "Spring Summer Runway Show",
+        "status": "completed",
+        "participants": 4
     },
     {
-        "user_id": 1,
-        "show_id": 1,
-        "total_attraction": 25,
+        "username": "Rina",
+        "star_name": "Nova Charm",
+        "user_id": 3,
+        "show_id": 2,
+        "total_attraction": 0,
         "final_rank": 3,
-        "diamonds_won": 30
+        "diamonds_won": 30,
+        "date": "2026-12-06",
+        "description": "Spring Summer Runway Show",
+        "status": "completed",
+        "participants": 4
     }
 ]
 ```
@@ -975,7 +1013,7 @@ Finalize a fashion show by selecting the top 3 runway stars and distributing dia
 
 ---
 
-## 2. Get Top 3 Runway Stars for a Fashion Show
+## 20. Get Top 3 Runway Stars for a Fashion Show
 
 **GET** `/runway-star/:fashion_show_id`
 
@@ -1014,71 +1052,50 @@ Retrieve the finalized top 3 runway stars for a specific fashion show.
 **Error Handling:**
 * `404 Not Found` – Fashion show does not exist
 
-
 ---
+## Get User Rank in Fashion Show
 
-## 3. Get Top 3 Runway Stars for All Fashion Shows
+**GET** `/runway-star/:fashion_show_id/user-rank`
 
-**GET** `/runway-star`
+Retrieve the authenticated user's rank in a specific ongoing fashion show.
 
-Retrieve finalized top 3 runway stars for all fashion shows.
+**Authentication Required:** Yes (JWT token)
+
+**Path Parameters:**
+* `fashion_show_id` (integer) – ID of the fashion show
 
 **Success Response:**
 
 * Status: `200 OK`
-
+* Message: `"Top 3 ranked runway stars fetched successfully"`
 ```json
-[
-    {
-        "id": 1,
-        "user_id": 5,
-        "show_id": 1,
-        "total_attraction": 95,
-        "final_rank": 1,
-        "diamonds_won": 100
-    },
-    {
-        "id": 2,
-        "user_id": 3,
-        "show_id": 1,
-        "total_attraction": 67,
-        "final_rank": 2,
-        "diamonds_won": 50
-    },
-    {
-        "id": 3,
-        "user_id": 1,
-        "show_id": 1,
-        "total_attraction": 25,
-        "final_rank": 3,
-        "diamonds_won": 30
-    },
-    {
-        "id": 4,
-        "user_id": 7,
-        "show_id": 2,
-        "total_attraction": 65,
-        "final_rank": 1,
-        "diamonds_won": 100
-    },
-    {
-        "id": 5,
-        "user_id": 3,
-        "show_id": 2,
-        "total_attraction": 57,
-        "final_rank": 2,
-        "diamonds_won": 50
-    },
-    {
-        "id": 6,
-        "user_id": 1,
-        "show_id": 2,
-        "total_attraction": 25,
-        "final_rank": 3,
-        "diamonds_won": 30
-    }
-]
+{
+    "user_id": 1,
+    "total_attraction": 25,
+    "status": "completed",
+    "final_rank": 1
+}
 ```
+
+**Error Handling:**
+* `401 Unauthorized` – Invalid or missing JWT token
+* `404 Not Found` – Fashion show does not exist or user not found
+* `400 Bad Request` – Fashion show is not currently ongoing
 
 ---
 
+# Frontend Pages Documentation
+
+## Pages Summary
+
+| Page | Route | Description| API Routes Used |
+|------|-------|-----------|-----------------|
+| **Runway Star - Index** | `/` | Landing page introducing the Runway Star platform with overview of features and call-to-action for login/register | None |
+| **Login** | `/login` | User authentication page for existing users | `POST /authentication/login` |
+| **Register** | `/register` | New user registration page | `POST /authentication/register` |
+| **Fashion Shows** | `/fashion-show` | Browse ongoing and upcoming fashion shows, view rankings, and participate in competitions | `GET /fashion-show/all` <br> `GET /runway-star/:fashion_show_id` <br> `POST /fashion-show`<br>`POST /fashion-show-entry/:fashion_show_id/enter`<br> `POST /runway-star/finalize ` |
+| **Challenges** | `/challenges` | View and participate in wellness challenges to earn points and rewards | `GET /challenges`<br>`DELETE /challenges/:challenge_id` <br>`POST /challenges/:challenge_id/record`<br>`DELETE /challenges/:challenge_id/record` |
+| **Store** | `/store` | Browse and purchase fashion items and accessories using diamonds | `GET /items/all`<br>`POST /items/:item_id/buy` |
+| **Profile** | `/profile` | View user profile, statistics, achievements, and fashion show history | `GET /users/me`<br>`PUT /users/`<br>`PUT /users/update-avatar`<br>`GET /runway-star/:fashion_show_id/user-rank` <br>`PUT /inventory/update-equip` <br> `DELETE /fashion-show-entry/:fashion_show_id` |
+
+---

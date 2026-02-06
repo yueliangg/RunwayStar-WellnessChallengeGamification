@@ -31,7 +31,8 @@ module.exports.getInventoryByUser = (req, res, next) => {
             console.log("Error getInventory: ", error);
             return res.status(500).json(error);
         }
-        res.locals.data = results;
+        res.locals.data = res.locals.data || {};
+        res.locals.data.userInventory = results;
         next();
     };
 
@@ -169,25 +170,23 @@ module.exports.calculateAttractionScore = (req, res, next) => {
     const callback = (error, results) => {
         if (error) {
             console.log("Error calculateAttractionScore:", error);
-            return res.status(500).json(error); // still return error immediately
+            return res.status(500).json(error);
         }
 
         // Sum the attraction values
         const total_score = results.reduce((sum, item) => sum + item.attraction_value, 0);
 
-        // Store values in res.locals for the next middleware
+        // Store in res.locals for next middleware
         res.locals.total_score = total_score;
-        res.locals.items = results;
         res.locals.user_id = data.user_id;
-
         res.locals.data = {
             user_id: data.user_id,
             total_score: total_score,
-            items: results
+            equipped_items: results
         };
         
         next();
     };
 
-    model.getEquippedItemsWithScore(data, callback);
+    model.getEquippedItems(data, callback);  // FIXED: Changed from getEquippedItemsWithScore
 };

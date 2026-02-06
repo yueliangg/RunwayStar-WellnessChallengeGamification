@@ -1,13 +1,5 @@
 const pool = require('../services/db');
 
-// select all items
-module.exports.selectAllItems = (callback) => {
-    const SQLSTATEMENT = `
-        SELECT * FROM Items
-    `;
-    pool.query(SQLSTATEMENT, callback);
-};
-
 // get item by id
 module.exports.selectItemById = (data, callback) => {
     const SQLSTATEMENT = `
@@ -28,18 +20,6 @@ module.exports.selectItemByName = (data, callback) => {
     `;
 
     const VALUES = [data.name];
-
-    pool.query(SQLSTATEMENT, VALUES, callback);
-};
-
-// Insert Item
-module.exports.insertItem = (data, callback) => {
-    const SQLSTATEMENT = `
-        INSERT INTO Items (name, type, cost_points, cost_diamonds, attraction_value)
-        VALUES (?, ?, ?, ?, ?)
-    `;
-
-    const VALUES = [data.name, data.type, data.cost_points, data.cost_diamonds, data.attraction_value];
 
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
@@ -94,6 +74,7 @@ module.exports.addToInventory = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
+//select normal items
 module.exports.getNormalItems = (callback) => {
     const SQLSTATEMENT = `
         SELECT *
@@ -104,6 +85,7 @@ module.exports.getNormalItems = (callback) => {
     pool.query(SQLSTATEMENT, callback);
 };
 
+//select exclusive items
 module.exports.getExclusiveItems = (callback) => {
     const SQLSTATEMENT = `
         SELECT *
